@@ -259,3 +259,11 @@ class PrivateKeyTest(TestCase):
         z = randint(0, 2**256)
         sig = pk.sign(z)
         self.assertTrue(pk.point.verify(z, sig))
+
+    def test_address(self):
+        priv = PrivateKey(5002)
+        self.assertEqual(priv.point.address(compressed=False, testnet=True), 'mmTPbXQFxboEtNRkwfh6K51jvdtHLxGeMA')
+        priv = PrivateKey(2020**5)
+        self.assertEqual(priv.point.address(compressed=True, testnet=True), 'mopVkxp8UhXqRYbCYJsbeE1h1fiF64jcoH')
+        priv = PrivateKey(0x12345deadbeef)
+        self.assertEqual(priv.point.address(compressed=True, testnet=False), '1F1Pn2y6pDb68E5nYJJeba4TLg2U7B6KF1')

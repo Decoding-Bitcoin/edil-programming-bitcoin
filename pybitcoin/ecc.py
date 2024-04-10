@@ -1,6 +1,8 @@
 from random import randint
 from unittest import TestCase
 
+from pybitcoin.hash import hash160
+from pybitcoin.base58 import encode_base58_checksum
 import hashlib
 import hmac
 
@@ -254,6 +256,18 @@ class S256Point(Point, S256Params):
             return S256Point(x, even_beta)
         else:
             return S256Point(x, odd_beta)
+
+    def hash160(self, compressed=True):
+        return hash160(self.sec(compressed))
+
+    def address(self, compressed=True, testnet=False):
+        '''returns the address string'''
+        h160 = self.hash160(compressed)
+        if testnet:
+            prefix = b'\x6f'
+        else:
+            prefix = b'\x00'
+        return encode_base58_checksum(prefix + h160)
 
 
 # ECDSA signature
