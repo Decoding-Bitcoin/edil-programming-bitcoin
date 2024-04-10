@@ -263,4 +263,3 @@ class PrivateKey:
                 return candidate
             k = hmac.new(k, v + b"\x00", s256).digest()
             v = hmac.new(k, v, s256).digest()
-
