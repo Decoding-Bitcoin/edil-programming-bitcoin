@@ -1,6 +1,3 @@
-from random import randint
-from unittest import TestCase
-
 from pybitcoin.hash import hash160
 from pybitcoin.base58 import encode_base58_checksum
 import hashlib
