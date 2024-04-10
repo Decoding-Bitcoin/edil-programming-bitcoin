@@ -1,0 +1,18 @@
+[project]
+name = "pybitcoin"
+version = "0.0.1"
+authors = [
+  { name="Edil Medeiros", email="jose.edil@gmail.com" },
+]
+description = "An implementation of the Programming Bitcoin exercises"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+
+[project.urls]
+Homepage = "https://github.com/Decoding-Bitcoin/edil-programming-bitcoin"
+Issues = "https://github.com/Decoding-Bitcoin/edil-programming-bitcoin/issues"
