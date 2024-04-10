@@ -9,14 +9,13 @@ class FieldElement:
 
     def __init__(self, num, prime):
         if num >= prime or num < 0:
-            error = 'Num {} not in field range 0 to {}'.format(
-                num, prime - 1)
+            error = "Num {} not in field range 0 to {}".format(num, prime - 1)
             raise ValueError(error)
         self.num = num
         self.prime = prime
 
     def __repr__(self):
-        return 'FieldElement_{}({})'.format(self.prime, self.num)
+        return "FieldElement_{}({})".format(self.prime, self.num)
 
     def __eq__(self, other):
         if other is None:
@@ -29,7 +28,7 @@ class FieldElement:
 
     def __add__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot add two numbers in different Fields')
+            raise TypeError("Cannot add two numbers in different Fields")
         # self.num and other.num are the actual values
         # self.prime is what we need to mod against
         num = (self.num + other.num) % self.prime
@@ -38,7 +37,7 @@ class FieldElement:
 
     def __sub__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot subtract two numbers in different Fields')
+            raise TypeError("Cannot subtract two numbers in different Fields")
         # self.num and other.num are the actual values
         # self.prime is what we need to mod against
         num = (self.num - other.num) % self.prime
@@ -47,7 +46,7 @@ class FieldElement:
 
     def __mul__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot multiply two numbers in different Fields')
+            raise TypeError("Cannot multiply two numbers in different Fields")
         # self.num and other.num are the actual values
         # self.prime is what we need to mod against
         num = (self.num * other.num) % self.prime
@@ -61,7 +60,7 @@ class FieldElement:
 
     def __truediv__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot divide two numbers in different Fields')
+            raise TypeError("Cannot divide two numbers in different Fields")
         # self.num and other.num are the actual values
         # self.prime is what we need to mod against
         # use fermat's little theorem:
@@ -141,11 +140,15 @@ class Point:
         if self.x is None and self.y is None:
             return
         if self.y**2 != self.x**3 + a * x + b:
-            raise ValueError('({}, {}) is not on the curve'.format(x, y))
+            raise ValueError("({}, {}) is not on the curve".format(x, y))
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y \
-            and self.a == other.a and self.b == other.b
+        return (
+            self.x == other.x
+            and self.y == other.y
+            and self.a == other.a
+            and self.b == other.b
+        )
 
     def __ne__(self, other):
         # this should be the inverse of the == operator
@@ -153,16 +156,19 @@ class Point:
 
     def __repr__(self):
         if self.x is None:
-            return 'Point(infinity)'
+            return "Point(infinity)"
         elif isinstance(self.x, FieldElement):
-            return 'Point({},{})_{}_{} FieldElement({})'.format(
-                self.x.num, self.y.num, self.a.num, self.b.num, self.x.prime)
+            return "Point({},{})_{}_{} FieldElement({})".format(
+                self.x.num, self.y.num, self.a.num, self.b.num, self.x.prime
+            )
         else:
-            return 'Point({},{})_{}_{}'.format(self.x, self.y, self.a, self.b)
+            return "Point({},{})_{}_{}".format(self.x, self.y, self.a, self.b)
 
     def __add__(self, other):
         if self.a != other.a or self.b != other.b:
-            raise TypeError('Points {}, {} are not on the same curve'.format(self, other))
+            raise TypeError(
+                "Points {}, {} are not on the same curve".format(self, other)
+            )
         # Case 0.0: self is the point at infinity, return other
         if self.x is None:
             return other
@@ -341,7 +347,7 @@ class ECCTest(TestCase):
 A = 0
 B = 7
 P = 2**256 - 2**32 - 977
-N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
 
 
 class S256Field(FieldElement):
@@ -350,7 +356,7 @@ class S256Field(FieldElement):
         super().__init__(num=num, prime=P)
 
     def __repr__(self):
-        return '{:x}'.format(self.num).zfill(64)
+        return "{:x}".format(self.num).zfill(64)
 
 
 class S256Point(Point):
@@ -364,9 +370,9 @@ class S256Point(Point):
 
     def __repr__(self):
         if self.x is None:
-            return 'S256Point(infinity)'
+            return "S256Point(infinity)"
         else:
-            return 'S256Point({}, {})'.format(self.x, self.y)
+            return "S256Point({}, {})".format(self.x, self.y)
 
     def __rmul__(self, coefficient):
         coef = coefficient % N
@@ -381,8 +387,9 @@ class S256Point(Point):
 
 
 G = S256Point(
-    0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
-    0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8)
+    0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
+    0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8,
+)
 
 
 class S256Test(TestCase):
@@ -395,10 +402,26 @@ class S256Test(TestCase):
         # write a test that tests the public point for the following
         points = (
             # secret, x, y
-            (7, 0x5cbdf0646e5db4eaa398f365f2ea7a0e3d419b7e0330e39ce92bddedcac4f9bc, 0x6aebca40ba255960a3178d6d861a54dba813d0b813fde7b5a5082628087264da),
-            (1485, 0xc982196a7466fbbbb0e27a940b6af926c1a74d5ad07128c82824a11b5398afda, 0x7a91f9eae64438afb9ce6448a1c133db2d8fb9254e4546b6f001637d50901f55),
-            (2**128, 0x8f68b9d2f63b5f339239c1ad981f162ee88c5678723ea3351b7b444c9ec4c0da, 0x662a9f2dba063986de1d90c2b6be215dbbea2cfe95510bfdf23cbf79501fff82),
-            (2**240 + 2**31, 0x9577ff57c8234558f293df502ca4f09cbc65a6572c842b39b366f21717945116, 0x10b49c67fa9365ad7b90dab070be339a1daf9052373ec30ffae4f72d5e66d053),
+            (
+                7,
+                0x5CBDF0646E5DB4EAA398F365F2EA7A0E3D419B7E0330E39CE92BDDEDCAC4F9BC,
+                0x6AEBCA40BA255960A3178D6D861A54DBA813D0B813FDE7B5A5082628087264DA,
+            ),
+            (
+                1485,
+                0xC982196A7466FBBBB0E27A940B6AF926C1A74D5AD07128C82824A11B5398AFDA,
+                0x7A91F9EAE64438AFB9CE6448A1C133DB2D8FB9254E4546B6F001637D50901F55,
+            ),
+            (
+                2**128,
+                0x8F68B9D2F63B5F339239C1AD981F162EE88C5678723EA3351B7B444C9EC4C0DA,
+                0x662A9F2DBA063986DE1D90C2B6BE215DBBEA2CFE95510BFDF23CBF79501FFF82,
+            ),
+            (
+                2**240 + 2**31,
+                0x9577FF57C8234558F293DF502CA4F09CBC65A6572C842B39B366F21717945116,
+                0x10B49C67FA9365AD7B90DAB070BE339A1DAF9052373EC30FFAE4F72D5E66D053,
+            ),
         )
 
         # iterate over points
@@ -410,15 +433,16 @@ class S256Test(TestCase):
 
     def test_verify(self):
         point = S256Point(
-            0x887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c,
-            0x61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34)
-        z = 0xec208baa0fc1c19f708a9ca96fdeff3ac3f230bb4a7ba4aede4942ad003c0f60
-        r = 0xac8d1c87e51d0d441be8b3dd5b05c8795b48875dffe00b7ffcfac23010d3a395
-        s = 0x68342ceff8935ededd102dd876ffd6ba72d6a427a3edb13d26eb0781cb423c4
+            0x887387E452B8EACC4ACFDE10D9AAF7F6D9A0F975AABB10D006E4DA568744D06C,
+            0x61DE6D95231CD89026E286DF3B6AE4A894A3378E393E93A0F45B666329A0AE34,
+        )
+        z = 0xEC208BAA0FC1C19F708A9CA96FDEFF3AC3F230BB4A7BA4AEDE4942AD003C0F60
+        r = 0xAC8D1C87E51D0D441BE8B3DD5B05C8795B48875DFFE00B7FFCFAC23010D3A395
+        s = 0x68342CEFF8935EDEDD102DD876FFD6BA72D6A427A3EDB13D26EB0781CB423C4
         self.assertTrue(point.verify(z, Signature(r, s)))
-        z = 0x7c076ff316692a3d7eb3c3bb0f8b1488cf72e1afcd929e29307032997a838a3d
-        r = 0xeff69ef2b1bd93a66ed5219add4fb51e11a840f404876325a1e8ffe0529a2c
-        s = 0xc7207fee197d27c618aea621406f6bf5ef6fca38681d82b2f06fddbdce6feab6
+        z = 0x7C076FF316692A3D7EB3C3BB0F8B1488CF72E1AFCD929E29307032997A838A3D
+        r = 0xEFF69EF2B1BD93A66ED5219ADD4FB51E11A840F404876325A1E8FFE0529A2C
+        s = 0xC7207FEE197D27C618AEA621406F6BF5EF6FCA38681D82B2F06FDDBDCE6FEAB6
         self.assertTrue(point.verify(z, Signature(r, s)))
 
 
@@ -429,7 +453,7 @@ class Signature:
         self.s = s
 
     def __repr__(self):
-        return 'Signature({:x},{:x})'.format(self.r, self.s)
+        return "Signature({:x},{:x})".format(self.r, self.s)
 
 
 class PrivateKey:
@@ -439,7 +463,7 @@ class PrivateKey:
         self.point = secret * G
 
     def hex(self):
-        return '{:x}'.format(self.secret).zfill(64)
+        return "{:x}".format(self.secret).zfill(64)
 
     def sign(self, z):
         k = self.deterministic_k(z)
@@ -451,23 +475,23 @@ class PrivateKey:
         return Signature(r, s)
 
     def deterministic_k(self, z):
-        k = b'\x00' * 32
-        v = b'\x01' * 32
+        k = b"\x00" * 32
+        v = b"\x01" * 32
         if z > N:
             z -= N
-        z_bytes = z.to_bytes(32, 'big')
-        secret_bytes = self.secret.to_bytes(32, 'big')
+        z_bytes = z.to_bytes(32, "big")
+        secret_bytes = self.secret.to_bytes(32, "big")
         s256 = hashlib.sha256
-        k = hmac.new(k, v + b'\x00' + secret_bytes + z_bytes, s256).digest()
+        k = hmac.new(k, v + b"\x00" + secret_bytes + z_bytes, s256).digest()
         v = hmac.new(k, v, s256).digest()
-        k = hmac.new(k, v + b'\x01' + secret_bytes + z_bytes, s256).digest()
+        k = hmac.new(k, v + b"\x01" + secret_bytes + z_bytes, s256).digest()
         v = hmac.new(k, v, s256).digest()
         while True:
             v = hmac.new(k, v, s256).digest()
-            candidate = int.from_bytes(v, 'big')
+            candidate = int.from_bytes(v, "big")
             if candidate >= 1 and candidate < N:
                 return candidate
-            k = hmac.new(k, v + b'\x00', s256).digest()
+            k = hmac.new(k, v + b"\x00", s256).digest()
             v = hmac.new(k, v, s256).digest()
 
 
