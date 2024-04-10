@@ -232,10 +232,15 @@ class S256Test(TestCase):
         s = 0xC7207FEE197D27C618AEA621406F6BF5EF6FCA38681D82B2F06FDDBDCE6FEAB6
         self.assertTrue(point.verify(z, Signature(r, s)))
 
-    def test_sec(self):
+    def test_sec_serialization(self):
         G = S256Point(S256Params.Gx, S256Params.Gy)
         self.assertEqual(G.sec(compressed=False), 0x0479BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8.to_bytes(65, 'big'))
         self.assertEqual(G.sec(), 0x0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798.to_bytes(33, 'big'))
+
+    def test_sec_parsing(self):
+        G = S256Point(S256Params.Gx, S256Params.Gy)
+        self.assertEqual(S256Point.parse(0x0479BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8.to_bytes(65, 'big')), G)
+        self.assertEqual(S256Point.parse(0x0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798.to_bytes(33, 'big')), G)
 
 
 class PrivateKeyTest(TestCase):
