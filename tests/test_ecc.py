@@ -179,9 +179,10 @@ class ECCTest(TestCase):
 
 
 class S256Test(TestCase):
+    G = S256Point(S256Params.Gx, S256Params.Gy)
 
     def test_order(self):
-        point = N * G
+        point = S256Params.N * self.G
         self.assertIsNone(point.x)
 
     def test_pubpoint(self):
@@ -215,7 +216,7 @@ class S256Test(TestCase):
             # initialize the secp256k1 point (S256Point)
             point = S256Point(x, y)
             # check that the secret*G is the same as the point
-            self.assertEqual(secret * G, point)
+            self.assertEqual(secret * self.G, point)
 
     def test_verify(self):
         point = S256Point(
@@ -233,9 +234,10 @@ class S256Test(TestCase):
 
 
 class PrivateKeyTest(TestCase):
+    G = S256Point(S256Params.Gx, S256Params.Gy)
 
     def test_sign(self):
-        pk = PrivateKey(randint(0, N))
+        pk = PrivateKey(randint(0, S256Params.N))
         z = randint(0, 2**256)
         sig = pk.sign(z)
         self.assertTrue(pk.point.verify(z, sig))

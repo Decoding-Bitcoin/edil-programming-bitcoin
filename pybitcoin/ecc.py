@@ -4,7 +4,7 @@ from unittest import TestCase
 import hashlib
 import hmac
 
-
+# Finite field operations
 class FieldElement:
 
     def __init__(self, num, prime):
@@ -76,6 +76,7 @@ class FieldElement:
         return self.__class__(num=num, prime=self.prime)
 
 
+# Elliptic curve operations
 class Point:
 
     def __init__(self, x, y, a, b):
@@ -168,25 +169,31 @@ class Point:
         return result
 
 
-A = 0
-B = 7
-P = 2**256 - 2**32 - 977
-N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+# Secp256k1 parameters
+class S256Params:
+    A = 0
+    B = 7
+    P = 2**256 - 2**32 - 977
+    N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+    Gx = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
+    Gy = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
 
 
-class S256Field(FieldElement):
+# Secp256k1 finite field
+class S256Field(FieldElement, S256Params):
 
     def __init__(self, num, prime=None):
-        super().__init__(num=num, prime=P)
+        super().__init__(num=num, prime=self.P)
 
     def __repr__(self):
         return "{:x}".format(self.num).zfill(64)
 
 
-class S256Point(Point):
+# A point on the secp256k1 curve
+class S256Point(Point, S256Params):
 
     def __init__(self, x, y, a=None, b=None):
-        a, b = S256Field(A), S256Field(B)
+        a, b = S256Field(self.A), S256Field(self.B)
         if type(x) == int:
             super().__init__(x=S256Field(x), y=S256Field(y), a=a, b=b)
         else:
@@ -199,23 +206,19 @@ class S256Point(Point):
             return "S256Point({}, {})".format(self.x, self.y)
 
     def __rmul__(self, coefficient):
-        coef = coefficient % N
+        coef = coefficient % self.N
         return super().__rmul__(coef)
 
     def verify(self, z, sig):
-        s_inv = pow(sig.s, N - 2, N)
-        u = z * s_inv % N
-        v = sig.r * s_inv % N
+        s_inv = pow(sig.s, self.N - 2, self.N)
+        u = z * s_inv % self.N
+        v = sig.r * s_inv % self.N
+        G = S256Point(self.Gx, self.Gy)
         total = u * G + v * self
         return total.x.num == sig.r
 
 
-G = S256Point(
-    0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
-    0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8,
-)
-
-
+# ECDSA signature
 class Signature:
 
     def __init__(self, r, s):
@@ -226,29 +229,31 @@ class Signature:
         return "Signature({:x},{:x})".format(self.r, self.s)
 
 
-class PrivateKey:
+# Bitcoin Private Key
+class PrivateKey(S256Params):
+    G = S256Point(S256Params.Gx, S256Params.Gy)
 
     def __init__(self, secret):
         self.secret = secret
-        self.point = secret * G
+        self.point = secret * self.G
 
     def hex(self):
         return "{:x}".format(self.secret).zfill(64)
 
     def sign(self, z):
         k = self.deterministic_k(z)
-        r = (k * G).x.num
-        k_inv = pow(k, N - 2, N)
-        s = (z + r * self.secret) * k_inv % N
-        if s > N / 2:
-            s = N - s
+        r = (k * self.G).x.num
+        k_inv = pow(k, self.N - 2, self.N)
+        s = (z + r * self.secret) * k_inv % self.N
+        if s > self.N / 2:
+            s = self.N - s
         return Signature(r, s)
 
     def deterministic_k(self, z):
         k = b"\x00" * 32
         v = b"\x01" * 32
-        if z > N:
-            z -= N
+        if z > self.N:
+            z -= self.N
         z_bytes = z.to_bytes(32, "big")
         secret_bytes = self.secret.to_bytes(32, "big")
         s256 = hashlib.sha256
@@ -259,7 +264,7 @@ class PrivateKey:
         while True:
             v = hmac.new(k, v, s256).digest()
             candidate = int.from_bytes(v, "big")
-            if candidate >= 1 and candidate < N:
+            if candidate >= 1 and candidate < self.N:
                 return candidate
             k = hmac.new(k, v + b"\x00", s256).digest()
             v = hmac.new(k, v, s256).digest()
