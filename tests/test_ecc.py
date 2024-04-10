@@ -243,6 +243,14 @@ class S256Test(TestCase):
         self.assertEqual(S256Point.parse(0x0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798.to_bytes(33, 'big')), G)
 
 
+class SignatureTest(TestCase):
+    def test_der(self):
+        r = 0x37206a0610995c58074999cb9767b87af4c4978db68c06e8e6e81d282047a7c6
+        s = 0x8ca63759c1157ebeaec0d03cecca119fc9a75bf8e6d0fa65c841c8e2738cdaec
+        sig = Signature(r, s)
+        self.assertEqual(sig.der(), 0x3045022037206a0610995c58074999cb9767b87af4c4978db68c06e8e6e81d282047a7c60221008ca63759c1157ebeaec0d03cecca119fc9a75bf8e6d0fa65c841c8e2738cdaec.to_bytes(71, 'big'))
+
+
 class PrivateKeyTest(TestCase):
     G = S256Point(S256Params.Gx, S256Params.Gy)
 
