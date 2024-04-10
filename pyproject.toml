@@ -12,7 +12,6 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent"
 ]
-dynamic = ["version"]
 
 [project.urls]
 Homepage = "https://github.com/Decoding-Bitcoin/edil-programming-bitcoin"
