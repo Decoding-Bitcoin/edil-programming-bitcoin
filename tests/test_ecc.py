@@ -1,4 +1,5 @@
 from unittest import TestCase
+from random import randint
 from pybitcoin.ecc import *
 
 
@@ -267,3 +268,11 @@ class PrivateKeyTest(TestCase):
         self.assertEqual(priv.point.address(compressed=True, testnet=True), 'mopVkxp8UhXqRYbCYJsbeE1h1fiF64jcoH')
         priv = PrivateKey(0x12345deadbeef)
         self.assertEqual(priv.point.address(compressed=True, testnet=False), '1F1Pn2y6pDb68E5nYJJeba4TLg2U7B6KF1')
+
+    def test_wif(self):
+        priv = PrivateKey(5003)
+        self.assertEqual(priv.wif(compressed=True, testnet=True),         'cMahea7zqjxrtgAbB7LSGbcQUr1uX1ojuat9jZodMN8rFTv2sfUK')
+        priv = PrivateKey(2021**5)
+        self.assertEqual(priv.wif(compressed=False, testnet=True), '91avARGdfge8E4tZfYLoxeJ5sGBdNJQH4kvjpWAxgzczjbCwxic')
+        priv = PrivateKey(0x54321deadbeef)
+        self.assertEqual(priv.wif(compressed=True, testnet=False), 'KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgiuQJv1h8Ytr2S53a')
