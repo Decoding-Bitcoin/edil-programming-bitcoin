@@ -9,4 +9,4 @@ class UtilTest(TestCase):
 
     def test_big_to_little_endian(self):
         n = 0x010203040506070809
-        self.assertEqual(int_to_little(n), n.to_bytes(9, 'little'))
+        self.assertEqual(int_to_little_endian(n, 9), n.to_bytes(9, 'little'))
