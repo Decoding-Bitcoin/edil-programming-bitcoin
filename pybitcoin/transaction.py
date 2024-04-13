@@ -1,5 +1,9 @@
-from pybitcoin.util import read_varint, encode_varint
+from pybitcoin.util import read_varint, encode_varint, int_to_little_endian
+from pybitcoin.hash import hash256
 
+from io import BytesIO
+import json
+import requests
 
 class TxIn:
     def __init__(self, prev_tx, prev_index, script_sig=None, sequence=0xffffffff):
@@ -16,6 +20,18 @@ class TxIn:
             self.prev_tx.hex(),
             self.prev_index,
         )
+
+    def serialize(self):
+        '''Returns the byte serialization of the transaction input'''
+        result = self.prev_tx[::-1] # to endian little
+        result += int_to_little_endian(self.prev_index, 4)
+
+        # TODO: serialize Script
+        result += self.script_sig
+        # result += self.script_sig.serialize()
+
+        result += int_to_little_endian(self.sequence, 4)
+        return result
 
     @classmethod
     def parse(cls, stream):
@@ -39,6 +55,22 @@ class TxIn:
         # return parsed transaction
         return TxIn(previous_id, previous_index, script_raw, sequence)
 
+    def fetch_tx(self, testnet=False):
+        return TxFetcher.fetch(self.prev_tx.hex(), testnet=testnet)
+
+    def value(self, testnet=False):
+        '''Get the output value by looking up the tx hash.
+        Returns the amount in satoshi.
+        '''
+        tx = self.fetch_tx(testnet=testnet)
+        return tx.tx_outs[self.prev_index].amount
+
+    def script_pubkey(self, testnet=False):
+        '''Get the scriptPubkey by looking up the tx hash.
+        Returns a Script object.
+        '''
+        tx = self.fetch_tx(testnet=testnet)
+        return tx.tx_outs[self.prev_index].script_pubkey
 
 
 class TxOut:
@@ -48,6 +80,15 @@ class TxOut:
 
     def __repr__(self):
         return '{}:{}'.format(self.amount, self.script_pubkey)
+
+    def serialize(self):
+        '''Returns the byte serialization of the transaction output'''
+        result = int_to_little_endian(self.amount, 8)
+
+        # TODO: serialize Script
+        result += self.script_pubkey
+        # result += self.script_pubkey.serialize()
+        return result
 
     @classmethod
     def parse(cls, stream):
@@ -97,6 +138,32 @@ class Tx:
         '''Binary hash of the legacy serialization'''
         return hash256(self.serialize())[::-1]
 
+    def fee(self, testnet=False):
+        # Get input amount
+        input_amount = 0
+        for tx_in in self.tx_ins:
+            input_amount += tx_in.value()
+
+        # Get output amount
+        output_amount = 0
+        for tx_out in self.tx_outs:
+            output_amount += tx_out.amount
+
+        # Return fee
+        return input_amount - output_amount
+
+    def serialize(self):
+        '''Returns the byte serialization of the transaction'''
+        result = int_to_little_endian(self.version, 4)
+        result += encode_varint(len(self.tx_ins))
+        for tx_in in self.tx_ins:
+            result += tx_in.serialize()
+        result += encode_varint(len(self.tx_outs))
+        for tx_out in self.tx_outs:
+            result += tx_out.serialize()
+        result += int_to_little_endian(self.locktime, 4)
+        return result
+
     @classmethod
     def parse(cls, stream, testnet=False):
         # parse version
@@ -120,3 +187,35 @@ class Tx:
 
         # build final transaction
         return Tx(version, tx_ins, tx_outs, locktime)
+
+
+class TxFetcher:
+    cache = {}
+
+    @classmethod
+    def get_url(cls, testnet=False):
+        if testnet:
+            return 'http://testnet.programmingbitcoin.com'
+        else:
+            return 'http://mainnet.programmingbitcoin.com'
+
+    @classmethod
+    def fetch(cls, tx_id, testnet=False, fresh=False):
+        if fresh or (tx_id not in cls.cache):
+            url = '{}/tx/{}.hex'.format(cls.get_url(testnet), tx_id)
+            response = requests.get(url)
+            try:
+                raw = bytes.fromhex(response.text.strip())
+            except ValueError:
+                raise ValueError('unexpected response: {}'.format(response.txt))
+            if raw[4] == 0:
+                raw = raw[:4] + raw[6:]
+                tx = Tx.parse(BytesIO(raw), testnet=testnet)
+                tx.locktime = little_endian_to_int(raw[-4:])
+            else:
+                tx = Tx.parse(BytesIO(raw), testnet=testnet)
+            if tx.id() != tx_id:
+                raise ValueError('not the same id: {} vs {}'.format(tx.id(), tx_id))
+            cls.cache[tx_id] = tx
+        cls.cache[tx_id].testnet = testnet
+        return cls.cache[tx_id]
