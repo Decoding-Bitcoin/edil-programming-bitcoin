@@ -116,6 +116,7 @@ class Tx:
             tx_outs.append(TxOut.parse(stream))
 
         # parse locktime
+        locktime = int.from_bytes(stream.read(4), 'little')
 
         # build final transaction
-        return Tx(version, tx_ins, tx_outs, 0, True)
+        return Tx(version, tx_ins, tx_outs, locktime)
