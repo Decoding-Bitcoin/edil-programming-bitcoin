@@ -1,0 +1,41 @@
+from unittest import TestCase
+from pybitcoin.opcodes import *
+
+
+class OpcodesTest(TestCase):
+
+    def test_op_dup(self):
+        stack = []
+        self.assertFalse(op_dup(stack))
+
+        stack = [0,1,2]
+        self.assertTrue(op_dup(stack))
+        self.assertEqual(stack, [0,1,2,2])
+
+    def test_op_hash160(self):
+        stack = []
+        self.assertFalse(op_hash160(stack))
+
+        stack = [b'\x00']
+        expected_stack = [bytes.fromhex('9f7fd096d37ed2c0e3f7f0cfc924beef4ffceb68')]
+        self.assertTrue(op_hash160(stack))
+        self.assertEqual(stack, expected_stack)
+
+        stack = [2, 1, b'\x00']
+        expected_stack = [2, 1, bytes.fromhex('9f7fd096d37ed2c0e3f7f0cfc924beef4ffceb68')]
+        self.assertTrue(op_hash160(stack))
+        self.assertEqual(stack, expected_stack)
+
+    def test_op_hash256(self):
+        stack = []
+        self.assertFalse(op_hash256(stack))
+
+        stack = [b'\x00']
+        expected_stack = [bytes.fromhex('1406e05881e299367766d313e26c05564ec91bf721d31726bd6e46e60689539a')]
+        self.assertTrue(op_hash256(stack))
+        self.assertEqual(stack, expected_stack)
+
+        stack = [2, 1, b'\x00']
+        expected_stack = [2, 1, bytes.fromhex('1406e05881e299367766d313e26c05564ec91bf721d31726bd6e46e60689539a')]
+        self.assertTrue(op_hash256(stack))
+        self.assertEqual(stack, expected_stack)
