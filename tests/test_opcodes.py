@@ -89,6 +89,13 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(0x76, [])
         self.opcodeShouldSucceed(0x76, [0,1,2], [0,1,2,2])
 
+    def test_op_nip(self):
+        op_nip = 0x77
+        self.opcodeShouldFail(op_nip, [])
+        self.opcodeShouldFail(op_nip, [0])
+        self.opcodeShouldSucceed(op_nip, [0,1], [1])
+        self.opcodeShouldSucceed(op_nip, [0,1,2], [0,2])
+
     def test_op_over(self):
         op_over = 0x78
         self.opcodeShouldFail(op_over, [])

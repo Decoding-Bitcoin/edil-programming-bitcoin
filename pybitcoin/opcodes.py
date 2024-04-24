@@ -221,7 +221,12 @@ def op_dup(stack):
     stack.append(stack[-1])
     return True
 
-# 0x77: 'OP_NIP',
+# 0x77: 'OP_NIP'
+def op_nip(stack):
+    if len(stack) < 2:
+        return False
+    stack.pop(-2)
+    return True
 
 # 0x78: 'OP_OVER'
 def op_over(stack):
@@ -363,7 +368,7 @@ OP_CODE_FUNCTIONS = {
     0x74: op_depth,
     0x75: op_drop,
     0x76: op_dup,
-    # 0x77: 'OP_NIP',
+    0x77: op_nip,
     0x78: op_over,
     # 0x79: 'OP_PICK',
     # 0x7a: 'OP_ROLL',
