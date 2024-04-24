@@ -161,7 +161,15 @@ def op_return(stack):
 
 # 0x6b: 'OP_TOALTSTACK',
 # 0x6c: 'OP_FROMALTSTACK',
-# 0x6d: 'OP_2DROP',
+
+# 0x6d: 'OP_2DROP'
+def op_2drop(stack):
+    if len(stack) < 2:
+        return False
+    stack.pop()
+    stack.pop()
+    return True
+
 # 0x6e: 'OP_2DUP',
 # 0x6f: 'OP3DUP',
 # 0x70: 'OP_2OVER',
@@ -320,7 +328,7 @@ OP_CODE_FUNCTIONS = {
     0x6a: op_return,
     # 0x6b: 'OP_TOALTSTACK',
     # 0x6c: 'OP_FROMALTSTACK',
-    # 0x6d: 'OP_2DROP',
+    0x6d: op_2drop,
     # 0x6e: 'OP_2DUP',
     # 0x6f: 'OP3DUP',
     # 0x70: 'OP_2OVER',

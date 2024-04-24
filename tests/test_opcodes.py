@@ -39,6 +39,13 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(0x6a, [])
         self.opcodeShouldFail(0x6a, [b'\x00'])
 
+    def test_op_2drop(self):
+        op_2drop = 0x6d
+        self.opcodeShouldFail(op_2drop, [])
+        self.opcodeShouldFail(op_2drop, [0])
+        self.opcodeShouldSucceed(op_2drop, [0,1], [])
+        self.opcodeShouldSucceed(op_2drop, [0,1,2], [0])
+
     def test_op_ifdup(self):
         op_ifdup = 0x73
         self.opcodeShouldFail(op_ifdup, [])
