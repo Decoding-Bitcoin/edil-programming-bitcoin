@@ -167,7 +167,15 @@ def op_return(stack):
 # 0x70: 'OP_2OVER',
 # 0x71: 'OP_2ROT',
 # 0x72: 'OP_2SWAP',
-# 0x73: 'OP_IFDUP',
+
+# 0x73: 'OP_IFDUP'
+def op_ifdup(stack):
+    if len(stack) < 1:
+        return False
+    if decode_num(stack[-1]) != 0:
+        stack.append(stack[-1])
+    return True
+
 # 0x74: 'OP_DEPTH',
 # 0x75: 'OP_DROP',
 
@@ -309,7 +317,7 @@ OP_CODE_FUNCTIONS = {
     # 0x70: 'OP_2OVER',
     # 0x71: 'OP_2ROT',
     # 0x72: 'OP_2SWAP',
-    # 0x73: 'OP_IFDUP',
+    0x73: op_ifdup,
     # 0x74: 'OP_DEPTH',
     # 0x75: 'OP_DROP',
     0x76: op_dup,
