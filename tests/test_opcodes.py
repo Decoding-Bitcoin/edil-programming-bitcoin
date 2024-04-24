@@ -59,6 +59,14 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(op_3dup, [0,1])
         self.opcodeShouldSucceed(op_3dup, [0,1,2], [0,1,2,0,1,2])
 
+    def test_op_2over(self):
+        op_2over = 0x70
+        self.opcodeShouldFail(op_2over, [])
+        self.opcodeShouldFail(op_2over, [0])
+        self.opcodeShouldFail(op_2over, [0,1])
+        self.opcodeShouldFail(op_2over, [0,1,2])
+        self.opcodeShouldSucceed(op_2over, [0,1,2,3], [0,1,2,3,0,1])
+
     def test_op_ifdup(self):
         op_ifdup = 0x73
         self.opcodeShouldFail(op_ifdup, [])
@@ -80,6 +88,12 @@ class OpcodesTest(TestCase):
     def test_op_dup(self):
         self.opcodeShouldFail(0x76, [])
         self.opcodeShouldSucceed(0x76, [0,1,2], [0,1,2,2])
+
+    def test_op_over(self):
+        op_over = 0x78
+        self.opcodeShouldFail(op_over, [])
+        self.opcodeShouldFail(op_over, [0])
+        self.opcodeShouldSucceed(op_over, [0, 1], [0, 1, 0])
 
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])

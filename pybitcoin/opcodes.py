@@ -184,7 +184,13 @@ def op_3dup(stack):
     stack.extend(stack[-3:])
     return True
 
-# 0x70: 'OP_2OVER',
+# 0x70: 'OP_2OVER'
+def op_2over(stack):
+    if len(stack) < 4:
+        return False
+    stack.extend(stack[-4:-2])
+    return True
+
 # 0x71: 'OP_2ROT',
 # 0x72: 'OP_2SWAP',
 
@@ -216,7 +222,14 @@ def op_dup(stack):
     return True
 
 # 0x77: 'OP_NIP',
-# 0x78: 'OP_OVER',
+
+# 0x78: 'OP_OVER'
+def op_over(stack):
+    if len(stack) < 2:
+        return False
+    stack.append(stack[-2])
+    return True
+
 # 0x79: 'OP_PICK',
 # 0x7a: 'OP_ROLL',
 # 0x7b: 'OP_ROT',
@@ -343,7 +356,7 @@ OP_CODE_FUNCTIONS = {
     0x6d: op_2drop,
     0x6e: op_2dup,
     0x6f: op_3dup,
-    # 0x70: 'OP_2OVER',
+    0x70: op_2over,
     # 0x71: 'OP_2ROT',
     # 0x72: 'OP_2SWAP',
     0x73: op_ifdup,
@@ -351,7 +364,7 @@ OP_CODE_FUNCTIONS = {
     0x75: op_drop,
     0x76: op_dup,
     # 0x77: 'OP_NIP',
-    # 0x78: 'OP_OVER',
+    0x78: op_over,
     # 0x79: 'OP_PICK',
     # 0x7a: 'OP_ROLL',
     # 0x7b: 'OP_ROT',
