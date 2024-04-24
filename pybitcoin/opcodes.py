@@ -1,5 +1,47 @@
 from pybitcoin.hash import hash160, hash256
 
+
+def encode_num(num):
+    if num == 0:
+        return b''
+    abs_num = abs(num)
+    negative = num < 0
+    result = bytearray()
+    while abs_num:
+        result.append(abs_num & 0xff)
+        abs_num >>= 8
+    if result[-1] & 0x80:
+        if negative:
+            result.append(0x80)
+        else:
+            result.append(0)
+    elif negative:
+        result[-1] |= 0x80
+    return bytes(result)
+
+def decode_num(element):
+    if element == b'':
+        return 0
+    big_endian = element[::-1]
+    if big_endian[0] & 0x80:
+        negative = True
+        result = big_endian[0] & 0x7f
+    else:
+        negative = False
+        result = big_endian[0]
+    for c in big_endian[1:]:
+        result <<= 8
+        result += c
+    if negative:
+        return -result
+    else:
+        return result
+
+# 0x00: OP_0
+def op_0(stack):
+    stack.append(encode_num(0))
+    return True
+
 # 0x76: OP_DUP
 def op_dup(stack):
     if len(stack) < 1:
@@ -25,7 +67,7 @@ def op_hash256(stack):
 
 
 OP_CODE_FUNCTIONS = {
-    # 0x00: 'OP_0',
+    0x00: op_0,
     # # 0x01 - 0x4b: the next opcode bytes is data to be pushed onto the stack
     # 0x4c: 'OP_PUSHDATA1',
     # 0x4d: 'OP_PUSHDATA2',
@@ -120,7 +162,7 @@ OP_CODE_FUNCTIONS = {
     # 0xa6: 'OP_RIPEMD160',
     # 0xa7: 'OP_SHA1',
     # 0xa8: 'OP_SHA256',
-    # 0xa9: 'OP_HASH160',
+    0xa9: op_hash160,
     0xaa: op_hash256,
     # 0xab: 'OP_CODESEPARATOR',
     # 0xac: 'OP_CHECKSIG',

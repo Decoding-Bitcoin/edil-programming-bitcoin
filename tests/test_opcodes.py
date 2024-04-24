@@ -4,6 +4,17 @@ from pybitcoin.opcodes import *
 
 class OpcodesTest(TestCase):
 
+    def test_op_0(self):
+        stack = []
+        expected = [b'']
+        self.assertTrue(op_0(stack))
+        self.assertEqual(stack, expected)
+
+        stack = [0, 1, 2]
+        expected = [0, 1, 2, b'']
+        self.assertTrue(op_0(stack))
+        self.assertEqual(stack, expected)
+
     def test_op_dup(self):
         stack = []
         self.assertFalse(op_dup(stack))
