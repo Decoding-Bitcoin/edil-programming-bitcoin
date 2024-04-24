@@ -145,7 +145,16 @@ def op_nop(stack):
 # 0x66: 'OP_VERNOTIF', # reserved
 # 0x67: 'OP_ELSE',
 # 0x68: 'OP_ENDIF',
+
 # 0x69: 'OP_VERIFY',
+def op_verify(stack):
+    if len(stack) < 1:
+        return False
+    element = stack.pop()
+    if decode_num(element) == 0:
+        return False
+    return True
+
 # 0x6a: 'OP_RETURN',
 # 0x6b: 'OP_TOALTSTACK',
 # 0x6c: 'OP_FROMALTSTACK',
@@ -287,7 +296,7 @@ OP_CODE_FUNCTIONS = {
     # 0x66: 'OP_VERNOTIF', # reserved
     # 0x67: 'OP_ELSE',
     # 0x68: 'OP_ENDIF',
-    # 0x69: 'OP_VERIFY',
+    0x69: op_verify,
     # 0x6a: 'OP_RETURN',
     # 0x6b: 'OP_TOALTSTACK',
     # 0x6c: 'OP_FROMALTSTACK',

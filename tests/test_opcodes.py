@@ -8,6 +8,9 @@ class OpcodesTest(TestCase):
         self.assertTrue(OP_CODE_FUNCTIONS[opcode](stack))
         self.assertEqual(stack, expected_stack)
 
+    def opcode_should_fail(self, opcode, stack):
+        self.assertFalse(OP_CODE_FUNCTIONS[opcode](stack))
+
     def test_op_0(self):
         self._test_opcode(0x00, [], [b''])
         self._test_opcode(0x00, [0,1,2], [0,1,2,b''])
@@ -25,6 +28,12 @@ class OpcodesTest(TestCase):
 
     def test_op_nop(self):
         self._test_opcode(0x61, [], [])
+
+    def test_op_verify(self):
+        self.opcode_should_fail(0x69, [])
+        self.opcode_should_fail(0x69, [b''])
+        self.opcode_should_fail(0x69, [b'\x00'])
+        self._test_opcode(0x69, [b'\x01'], [])
 
     def test_op_dup(self):
         stack = []
