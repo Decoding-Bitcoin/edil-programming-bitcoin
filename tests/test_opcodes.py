@@ -52,6 +52,13 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(op_2dup, [0])
         self.opcodeShouldSucceed(op_2dup, [0,1], [0,1,0,1])
 
+    def test_op_3dup(self):
+        op_3dup = 0x6f
+        self.opcodeShouldFail(op_3dup, [])
+        self.opcodeShouldFail(op_3dup, [0])
+        self.opcodeShouldFail(op_3dup, [0,1])
+        self.opcodeShouldSucceed(op_3dup, [0,1,2], [0,1,2,0,1,2])
+
     def test_op_ifdup(self):
         op_ifdup = 0x73
         self.opcodeShouldFail(op_ifdup, [])

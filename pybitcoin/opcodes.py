@@ -177,7 +177,13 @@ def op_2dup(stack):
     stack.extend(stack[-2:])
     return True
 
-# 0x6f: 'OP3DUP',
+# 0x6f: 'OP3DUP'
+def op_3dup(stack):
+    if len(stack) < 3:
+        return False
+    stack.extend(stack[-3:])
+    return True
+
 # 0x70: 'OP_2OVER',
 # 0x71: 'OP_2ROT',
 # 0x72: 'OP_2SWAP',
@@ -336,7 +342,7 @@ OP_CODE_FUNCTIONS = {
     # 0x6c: 'OP_FROMALTSTACK',
     0x6d: op_2drop,
     0x6e: op_2dup,
-    # 0x6f: 'OP3DUP',
+    0x6f: op_3dup,
     # 0x70: 'OP_2OVER',
     # 0x71: 'OP_2ROT',
     # 0x72: 'OP_2SWAP',
