@@ -26,6 +26,21 @@ class OpcodesTest(TestCase):
         self.assertTrue(op_1negate(stack))
         self.assertEqual(stack, expected)
 
+    def test_op_1_to_15(self):
+        for i in range(1,16):
+            with self.subTest(i=i):
+                opcode = i + 0x50
+
+                stack = []
+                expected = [i.to_bytes(1, 'little')]
+                self.assertTrue(OP_CODE_FUNCTIONS[opcode](stack))
+                self.assertEqual(stack, expected)
+
+                stack = [0, 1, 2]
+                expected = [0, 1, 2, i.to_bytes(1, 'little')]
+                self.assertTrue(OP_CODE_FUNCTIONS[opcode](stack))
+                self.assertEqual(stack, expected)
+
     def test_op_dup(self):
         stack = []
         self.assertFalse(op_dup(stack))

@@ -47,28 +47,93 @@ def op_0(stack):
 # 0x4d: 'OP_PUSHDATA2',
 # 0x4e: 'OP_PUSHDATA4',
 
-# 0x4f: 'OP_1NEGATE',
+# 0x4f: 'OP_1NEGATE'
 def op_1negate(stack):
     stack.append(encode_num(-1))
     return True
 
 # 0x50: 'OP_RESERVED', # reserved
-# 0x51: 'OP_1',
-# 0x52: 'OP_2',
-# 0x53: 'OP_3',
-# 0x54: 'OP_4',
-# 0x55: 'OP_5',
-# 0x56: 'OP_6',
-# 0x57: 'OP_7',
-# 0x58: 'OP_8',
-# 0x59: 'OP_9',
-# 0x5a: 'OP_10',
-# 0x5b: 'OP_11',
-# 0x5c: 'OP_12',
-# 0x5d: 'OP_13',
-# 0x5e: 'OP_14',
-# 0x5f: 'OP_15',
-# 0x60: 'OP_16',
+
+# 0x51: 'OP_1'
+def op_1(stack):
+    stack.append(encode_num(1))
+    return True
+
+# 0x52: 'OP_2'
+def op_2(stack):
+    stack.append(encode_num(2))
+    return True
+
+# 0x53: 'OP_3'
+def op_3(stack):
+    stack.append(encode_num(3))
+    return True
+
+# 0x54: 'OP_4'
+def op_4(stack):
+    stack.append(encode_num(4))
+    return True
+
+# 0x55: 'OP_5'
+def op_5(stack):
+    stack.append(encode_num(5))
+    return True
+
+# 0x56: 'OP_6'
+def op_6(stack):
+    stack.append(encode_num(6))
+    return True
+
+# 0x57: 'OP_7'
+def op_7(stack):
+    stack.append(encode_num(7))
+    return True
+
+# 0x58: 'OP_8'
+def op_8(stack):
+    stack.append(encode_num(8))
+    return True
+
+# 0x59: 'OP_9'
+def op_9(stack):
+    stack.append(encode_num(9))
+    return True
+
+# 0x5a: 'OP_10'
+def op_10(stack):
+    stack.append(encode_num(10))
+    return True
+
+# 0x5b: 'OP_11'
+def op_11(stack):
+    stack.append(encode_num(11))
+    return True
+
+# 0x5c: 'OP_12'
+def op_12(stack):
+    stack.append(encode_num(12))
+    return True
+
+# 0x5d: 'OP_13'
+def op_13(stack):
+    stack.append(encode_num(13))
+    return True
+
+# 0x5e: 'OP_14'
+def op_14(stack):
+    stack.append(encode_num(14))
+    return True
+
+# 0x5f: 'OP_15'
+def op_15(stack):
+    stack.append(encode_num(15))
+    return True
+
+# 0x60: 'OP_16'
+def op_16(stack):
+    stack.append(encode_num(16))
+    return True
+
 # 0x61: 'OP_NOP',
 # 0x62: 'OP_VER', # reserved
 # 0x63: 'OP_IF',
@@ -193,24 +258,24 @@ OP_CODE_FUNCTIONS = {
     # 0x4c: 'OP_PUSHDATA1',
     # 0x4d: 'OP_PUSHDATA2',
     # 0x4e: 'OP_PUSHDATA4',
-    # 0x4f: 'OP_1NEGATE',
+    0x4f: op_1negate,
     # 0x50: 'OP_RESERVED', # reserved
-    # 0x51: 'OP_1',
-    # 0x52: 'OP_2',
-    # 0x53: 'OP_3',
-    # 0x54: 'OP_4',
-    # 0x55: 'OP_5',
-    # 0x56: 'OP_6',
-    # 0x57: 'OP_7',
-    # 0x58: 'OP_8',
-    # 0x59: 'OP_9',
-    # 0x5a: 'OP_10',
-    # 0x5b: 'OP_11',
-    # 0x5c: 'OP_12',
-    # 0x5d: 'OP_13',
-    # 0x5e: 'OP_14',
-    # 0x5f: 'OP_15',
-    # 0x60: 'OP_16',
+    0x51: op_1,
+    0x52: op_2,
+    0x53: op_3,
+    0x54: op_4,
+    0x55: op_5,
+    0x56: op_6,
+    0x57: op_7,
+    0x58: op_8,
+    0x59: op_9,
+    0x5a: op_10,
+    0x5b: op_11,
+    0x5c: op_12,
+    0x5d: op_13,
+    0x5e: op_14,
+    0x5f: op_15,
+    0x60: op_16,
     # 0x61: 'OP_NOP',
     # 0x62: 'OP_VER', # reserved
     # 0x63: 'OP_IF',
