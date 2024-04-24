@@ -26,3 +26,9 @@ To run the tests, use `pytest`.
 ``` bash
 pytest tests
 ```
+
+Alternatively, use `unittest` directly:
+
+``` bash
+python -m unittest -v
+```

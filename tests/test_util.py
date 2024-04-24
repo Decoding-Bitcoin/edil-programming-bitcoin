@@ -48,3 +48,7 @@ class UtilTest(TestCase):
 
         n = bytes.fromhex('ff6dc7ed3e60100000')
         self.assertEqual(n, encode_varint(18005558675309))
+
+
+if __name__ == '__main__':
+    unittest.main()

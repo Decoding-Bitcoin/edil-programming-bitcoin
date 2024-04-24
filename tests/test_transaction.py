@@ -55,3 +55,7 @@ class TransactionTest(TestCase):
         stream = BytesIO(raw_tx)
         tx = Tx.parse(stream)
         self.assertEqual(tx.fee(), 140500)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -276,3 +276,7 @@ class PrivateKeyTest(TestCase):
         self.assertEqual(priv.wif(compressed=False, testnet=True), '91avARGdfge8E4tZfYLoxeJ5sGBdNJQH4kvjpWAxgzczjbCwxic')
         priv = PrivateKey(0x54321deadbeef)
         self.assertEqual(priv.wif(compressed=True, testnet=False), 'KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgiuQJv1h8Ytr2S53a')
+
+
+if __name__ == '__main__':
+    unittest.main()

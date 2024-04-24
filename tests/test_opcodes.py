@@ -27,7 +27,7 @@ class OpcodesTest(TestCase):
         self.assertEqual(stack, expected)
 
     def test_op_1_to_15(self):
-        for i in range(1,16):
+        for i in range(1,17):
             with self.subTest(i=i):
                 opcode = i + 0x50
 
@@ -76,3 +76,7 @@ class OpcodesTest(TestCase):
         expected_stack = [2, 1, bytes.fromhex('1406e05881e299367766d313e26c05564ec91bf721d31726bd6e46e60689539a')]
         self.assertTrue(op_hash256(stack))
         self.assertEqual(stack, expected_stack)
+
+
+if __name__ == '__main__':
+    unittest.main()
