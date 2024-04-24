@@ -15,6 +15,17 @@ class OpcodesTest(TestCase):
         self.assertTrue(op_0(stack))
         self.assertEqual(stack, expected)
 
+    def test_op_1negate(self):
+        stack = []
+        expected = [b'\x81']
+        self.assertTrue(op_1negate(stack))
+        self.assertEqual(stack, expected)
+
+        stack = [0, 1, 2]
+        expected = [0, 1, 2, b'\x81']
+        self.assertTrue(op_1negate(stack))
+        self.assertEqual(stack, expected)
+
     def test_op_dup(self):
         stack = []
         self.assertFalse(op_dup(stack))
