@@ -155,7 +155,10 @@ def op_verify(stack):
         return False
     return True
 
-# 0x6a: 'OP_RETURN',
+# 0x6a: 'OP_RETURN'
+def op_return(stack):
+    return False
+
 # 0x6b: 'OP_TOALTSTACK',
 # 0x6c: 'OP_FROMALTSTACK',
 # 0x6d: 'OP_2DROP',
@@ -297,7 +300,7 @@ OP_CODE_FUNCTIONS = {
     # 0x67: 'OP_ELSE',
     # 0x68: 'OP_ENDIF',
     0x69: op_verify,
-    # 0x6a: 'OP_RETURN',
+    0x6a: op_return,
     # 0x6b: 'OP_TOALTSTACK',
     # 0x6c: 'OP_FROMALTSTACK',
     # 0x6d: 'OP_2DROP',
