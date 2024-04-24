@@ -134,7 +134,10 @@ def op_16(stack):
     stack.append(encode_num(16))
     return True
 
-# 0x61: 'OP_NOP',
+# 0x61: 'OP_NOP'
+def op_nop(stack):
+    return True
+
 # 0x62: 'OP_VER', # reserved
 # 0x63: 'OP_IF',
 # 0x64: 'OP_NOTIF',
@@ -276,7 +279,7 @@ OP_CODE_FUNCTIONS = {
     0x5e: op_14,
     0x5f: op_15,
     0x60: op_16,
-    # 0x61: 'OP_NOP',
+    0x61: op_nop,
     # 0x62: 'OP_VER', # reserved
     # 0x63: 'OP_IF',
     # 0x64: 'OP_NOTIF',

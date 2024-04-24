@@ -41,6 +41,13 @@ class OpcodesTest(TestCase):
                 self.assertTrue(OP_CODE_FUNCTIONS[opcode](stack))
                 self.assertEqual(stack, expected)
 
+    def test_op_nop(self):
+        opcode = 0x61
+        stack = []
+        expected = []
+        self.assertTrue(OP_CODE_FUNCTIONS[opcode](stack))
+        self.assertEqual(stack, expected)
+
     def test_op_dup(self):
         stack = []
         self.assertFalse(op_dup(stack))
