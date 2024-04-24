@@ -46,6 +46,11 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_ifdup, [b'\x00'], [b'\x00'])
         self.opcodeShouldSucceed(op_ifdup, [b'\x01'], [b'\x01', b'\x01'])
 
+    def test_op_depth(self):
+        op_depth = 0x74
+        self.opcodeShouldSucceed(op_depth, [], [b''])
+        self.opcodeShouldSucceed(op_depth, [0,1,2], [0,1,2,b'\x03'])
+
     def test_op_dup(self):
         self.opcodeShouldFail(0x76, [])
         self.opcodeShouldSucceed(0x76, [0,1,2], [0,1,2,2])

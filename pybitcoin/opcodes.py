@@ -176,7 +176,11 @@ def op_ifdup(stack):
         stack.append(stack[-1])
     return True
 
-# 0x74: 'OP_DEPTH',
+# 0x74: 'OP_DEPTH'
+def op_depth(stack):
+    stack.append(encode_num(len(stack)))
+    return True
+
 # 0x75: 'OP_DROP',
 
 # 0x76: OP_DUP
@@ -318,7 +322,7 @@ OP_CODE_FUNCTIONS = {
     # 0x71: 'OP_2ROT',
     # 0x72: 'OP_2SWAP',
     0x73: op_ifdup,
-    # 0x74: 'OP_DEPTH',
+    0x74: op_depth,
     # 0x75: 'OP_DROP',
     0x76: op_dup,
     # 0x77: 'OP_NIP',
