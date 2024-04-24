@@ -51,6 +51,12 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_depth, [], [b''])
         self.opcodeShouldSucceed(op_depth, [0,1,2], [0,1,2,b'\x03'])
 
+    def test_op_drop(self):
+        op_drop = 0x75
+        self.opcodeShouldFail(op_drop, [])
+        self.opcodeShouldSucceed(op_drop, [0], [])
+        self.opcodeShouldSucceed(op_drop, [0,1,2], [0,1])
+
     def test_op_dup(self):
         self.opcodeShouldFail(0x76, [])
         self.opcodeShouldSucceed(0x76, [0,1,2], [0,1,2,2])
