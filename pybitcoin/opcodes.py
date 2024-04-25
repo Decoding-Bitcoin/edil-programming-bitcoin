@@ -159,8 +159,19 @@ def op_verify(stack):
 def op_return(stack):
     return False
 
-# 0x6b: 'OP_TOALTSTACK',
-# 0x6c: 'OP_FROMALTSTACK',
+# 0x6b: 'OP_TOALTSTACK'
+def op_toaltstack(stack, altstack):
+    if len(stack) < 1:
+        return False
+    altstack.append(stack.pop())
+    return True
+
+# 0x6c: 'OP_FROMALTSTACK'
+def op_fromaltstack(stack, altstack):
+    if len(altstack) < 1:
+        return False
+    stack.append(altstack.pop())
+    return True
 
 # 0x6d: 'OP_2DROP'
 def op_2drop(stack):
@@ -428,8 +439,8 @@ OP_CODE_FUNCTIONS = {
     # 0x68: 'OP_ENDIF',
     0x69: op_verify,
     0x6a: op_return,
-    # 0x6b: 'OP_TOALTSTACK',
-    # 0x6c: 'OP_FROMALTSTACK',
+    0x6b: op_toaltstack,
+    0x6c: op_fromaltstack,
     0x6d: op_2drop,
     0x6e: op_2dup,
     0x6f: op_3dup,

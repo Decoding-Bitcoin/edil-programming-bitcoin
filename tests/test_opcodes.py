@@ -39,6 +39,62 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(0x6a, [])
         self.opcodeShouldFail(0x6a, [b'\x00'])
 
+    def test_op_toaltstack(self):
+        op_toaltstack = 0x6b
+
+        stack = []
+        altstack = []
+        self.assertFalse(OP_CODE_FUNCTIONS[op_toaltstack](stack, altstack))
+
+        stack = []
+        altstack = [0,1]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_toaltstack](stack, altstack))
+
+        stack = [0]
+        expected_stack = []
+        altstack = []
+        expected_altstack = [0]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_toaltstack](stack, altstack))
+        self.assertEqual(stack, expected_stack)
+        self.assertEqual(altstack, expected_altstack)
+
+        stack = [0,1,2]
+        expected_stack = [0,1]
+        altstack = [3,4,5]
+        expected_altstack = [3,4,5,2]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_toaltstack](stack, altstack))
+        self.assertEqual(stack, expected_stack)
+        self.assertEqual(altstack, expected_altstack)
+
+
+    def test_op_fromaltstack(self):
+        op_fromaltstack = 0x6c
+
+        stack = []
+        altstack = []
+        self.assertFalse(OP_CODE_FUNCTIONS[op_fromaltstack](stack, altstack))
+
+        stack = [0,1]
+        altstack = []
+        self.assertFalse(OP_CODE_FUNCTIONS[op_fromaltstack](stack, altstack))
+
+        stack = []
+        expected_stack = [0]
+        altstack = [0]
+        expected_altstack = []
+        self.assertTrue(OP_CODE_FUNCTIONS[op_fromaltstack](stack, altstack))
+        self.assertEqual(stack, expected_stack)
+        self.assertEqual(altstack, expected_altstack)
+
+        stack = [0,1,2]
+        expected_stack = [0,1,2,5]
+        altstack = [3,4,5]
+        expected_altstack = [3,4]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_fromaltstack](stack, altstack))
+        self.assertEqual(stack, expected_stack)
+        self.assertEqual(altstack, expected_altstack)
+
+
     def test_op_2drop(self):
         op_2drop = 0x6d
         self.opcodeShouldFail(op_2drop, [])
