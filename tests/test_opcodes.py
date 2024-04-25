@@ -171,6 +171,24 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_size, [b'\x01\x02'], [b'\x01\x02', b'\x02'])
         self.opcodeShouldSucceed(op_size, [0,1,b'\x01\x02'], [0,1,b'\x01\x02', b'\x02'])
 
+    def test_op_equal(self):
+        op_equal = 0x87
+        self.opcodeShouldFail(op_equal, [])
+        self.opcodeShouldFail(op_equal, [0])
+        self.opcodeShouldSucceed(op_equal, [0,1], [b''])
+        self.opcodeShouldSucceed(op_equal, [0,1,2], [0, b''])
+        self.opcodeShouldSucceed(op_equal, [0,0], [b'\x01'])
+        self.opcodeShouldSucceed(op_equal, [0,1,1], [0, b'\x01'])
+
+    def test_op_equalverify(self):
+        op_equal = 0x88
+        self.opcodeShouldFail(op_equal, [])
+        self.opcodeShouldFail(op_equal, [0])
+        self.opcodeShouldFail(op_equal, [0,1])
+        self.opcodeShouldFail(op_equal, [0,1,2])
+        self.opcodeShouldSucceed(op_equal, [0,0], [])
+        self.opcodeShouldSucceed(op_equal, [0,1,1], [0])
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,

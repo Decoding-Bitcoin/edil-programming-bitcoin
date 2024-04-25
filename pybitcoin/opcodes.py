@@ -141,7 +141,7 @@ def op_nop(stack):
 # 0x62: 'OP_VER', # reserved
 # 0x63: 'OP_IF',
 # 0x64: 'OP_NOTIF',
-# 0x65: 'OP_VERIFY', # reserved
+# 0x65: 'OP_VERIF', # reserved
 # 0x66: 'OP_VERNOTIF', # reserved
 # 0x67: 'OP_ELSE',
 # 0x68: 'OP_ENDIF',
@@ -306,8 +306,23 @@ def op_size(stack):
 # 0x84: 'OP_AND',
 # 0x85: 'OP_OR',
 # 0x86: 'OP_XOR',
-# 0x87: 'OP_EQUAL',
-# 0x88: 'OP_EQUALVERIFY',
+
+# 0x87: 'OP_EQUAL'
+def op_equal(stack):
+    if len(stack) < 2:
+        return False
+    x1 = stack.pop()
+    x2 = stack.pop()
+    if x1 == x2:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0x88: 'OP_EQUALVERIFY'
+def op_equalverify(stack):
+    return op_equal(stack) and op_verify(stack)
+
 # 0x89: 'OP_RESERVED1', # reserved
 # 0x8a: 'OP_RESERVED2', # reserved
 # 0x8b: 'OP_1ADD',
@@ -407,7 +422,7 @@ OP_CODE_FUNCTIONS = {
     # 0x62: 'OP_VER', # reserved
     # 0x63: 'OP_IF',
     # 0x64: 'OP_NOTIF',
-    # 0x65: 'OP_VERIFY', # reserved
+    # 0x65: 'OP_VERIF', # reserved
     # 0x66: 'OP_VERNOTIF', # reserved
     # 0x67: 'OP_ELSE',
     # 0x68: 'OP_ENDIF',
@@ -441,8 +456,8 @@ OP_CODE_FUNCTIONS = {
     # 0x84: 'OP_AND',
     # 0x85: 'OP_OR',
     # 0x86: 'OP_XOR',
-    # 0x87: 'OP_EQUAL',
-    # 0x88: 'OP_EQUALVERIFY',
+    0x87: op_equal,
+    0x88: op_equalverify,
     # 0x89: 'OP_RESERVED1', # reserved
     # 0x8a: 'OP_RESERVED2', # reserved
     # 0x8b: 'OP_1ADD',
