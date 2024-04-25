@@ -397,8 +397,24 @@ def op_0notequal(stack):
         stack.append(encode_num(1))
     return True
 
-# 0x93: 'OP_ADD',
-# 0x94: 'OP_SUB',
+# 0x93: 'OP_ADD'
+def op_add(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    stack.append(encode_num(a + b))
+    return True
+
+# 0x94: 'OP_SUB'
+def op_sub(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    stack.append(encode_num(a - b))
+    return True
+
 # 0x95: 'OP_MUL',
 # 0x96: 'OP_DIV',
 # 0x97: 'OP_MOD',
@@ -532,8 +548,8 @@ OP_CODE_FUNCTIONS = {
     0x90: op_abs,
     0x91: op_not,
     0x92: op_0notequal,
-    # 0x93: 'OP_ADD',
-    # 0x94: 'OP_SUB',
+    0x93: op_add,
+    0x94: op_sub,
     # 0x95: 'OP_MUL',
     # 0x96: 'OP_DIV',
     # 0x97: 'OP_MOD',
