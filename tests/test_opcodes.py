@@ -121,6 +121,28 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(op_over, [0])
         self.opcodeShouldSucceed(op_over, [0, 1], [0, 1, 0])
 
+    def test_op_pick(self):
+        op_pick = 0x79
+        self.opcodeShouldFail(op_pick, [])
+        self.opcodeShouldFail(op_pick, [b'\x01'])
+        self.opcodeShouldFail(op_pick, [0, b'\x01'])
+        self.opcodeShouldFail(op_pick, [b''])
+        self.opcodeShouldSucceed(op_pick, [0, b''], [0,0])
+        self.opcodeShouldSucceed(op_pick, [0, 1, b'\x01'], [0,1,0])
+        self.opcodeShouldSucceed(op_pick, [0, 1, b'\x00'], [0,1,1])
+        self.opcodeShouldSucceed(op_pick, [0, 1, 2, 3, b'\x01'], [0,1,2,3,2])
+
+    def test_op_pick(self):
+        op_roll = 0x7a
+        self.opcodeShouldFail(op_roll, [])
+        self.opcodeShouldFail(op_roll, [b'\x01'])
+        self.opcodeShouldFail(op_roll, [0, b'\x01'])
+        self.opcodeShouldFail(op_roll, [b''])
+        self.opcodeShouldSucceed(op_roll, [0, b''], [0])
+        self.opcodeShouldSucceed(op_roll, [0, 1, b'\x01'], [1,0])
+        self.opcodeShouldSucceed(op_roll, [0, 1, b'\x00'], [0,1])
+        self.opcodeShouldSucceed(op_roll, [0, 1, 2, 3, b'\x01'], [0,1,3,2])
+
     def test_op_rot(self):
         op_rot = 0x7b
         self.opcodeShouldFail(op_rot, [])
@@ -134,6 +156,13 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(op_swap, [0])
         self.opcodeShouldSucceed(op_swap, [0,1], [1,0])
         self.opcodeShouldSucceed(op_swap, [0,1,2], [0,2,1])
+
+    def test_op_tuck(self):
+        op_tuck = 0x7d
+        self.opcodeShouldFail(op_tuck, [])
+        self.opcodeShouldFail(op_tuck, [0])
+        self.opcodeShouldSucceed(op_tuck, [0,1], [1,0,1])
+        self.opcodeShouldSucceed(op_tuck, [0,1,2], [0,2,1,2])
 
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])

@@ -248,8 +248,25 @@ def op_over(stack):
     stack.append(stack[-2])
     return True
 
-# 0x79: 'OP_PICK',
-# 0x7a: 'OP_ROLL',
+# 0x79: 'OP_PICK'
+def op_pick(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    if len(stack) < n + 1:
+        return False
+    stack.append(stack[-n - 1])
+    return True
+
+# 0x7a: 'OP_ROLL'
+def op_roll(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    if len(stack) < n + 1:
+        return False
+    stack.append(stack.pop(-n - 1))
+    return True
 
 # 0x7b: 'OP_ROT'
 def op_rot(stack):
@@ -265,7 +282,13 @@ def op_swap(stack):
     stack.append(stack.pop(-2))
     return True
 
-# 0x7d: 'OP_TUCK',
+# 0x7d: 'OP_TUCK'
+def op_tuck(stack):
+    if len(stack) < 2:
+        return False
+    stack.insert(-2, stack[-1])
+    return True
+
 # 0x7e: 'OP_CAT',
 # 0x7f: 'OP_SUBSTR',
 # 0x80: 'OP_LEFT',
@@ -396,11 +419,11 @@ OP_CODE_FUNCTIONS = {
     0x76: op_dup,
     0x77: op_nip,
     0x78: op_over,
-    # 0x79: 'OP_PICK',
-    # 0x7a: 'OP_ROLL',
+    0x79: op_pick,
+    0x7a: op_roll,
     0x7b: op_rot,
     0x7c: op_swap,
-    # 0x7d: 'OP_TUCK',
+    0x7d: op_tuck,
     # 0x7e: 'OP_CAT',
     # 0x7f: 'OP_SUBSTR',
     # 0x80: 'OP_LEFT',
