@@ -164,6 +164,13 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_tuck, [0,1], [1,0,1])
         self.opcodeShouldSucceed(op_tuck, [0,1,2], [0,2,1,2])
 
+    def test_op_size(self):
+        op_size = 0x82
+        self.opcodeShouldFail(op_size, [])
+        self.opcodeShouldSucceed(op_size, [b''], [b'', b''])
+        self.opcodeShouldSucceed(op_size, [b'\x01\x02'], [b'\x01\x02', b'\x02'])
+        self.opcodeShouldSucceed(op_size, [0,1,b'\x01\x02'], [0,1,b'\x01\x02', b'\x02'])
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,

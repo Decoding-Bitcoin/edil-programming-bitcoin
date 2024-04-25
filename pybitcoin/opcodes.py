@@ -293,7 +293,15 @@ def op_tuck(stack):
 # 0x7f: 'OP_SUBSTR',
 # 0x80: 'OP_LEFT',
 # 0x81: 'OP_RIGHT',
-# 0x82: 'OP_SIZE',
+
+# 0x82: 'OP_SIZE'
+def op_size(stack):
+    if len(stack) < 1:
+        return False
+    size = len(stack[-1])
+    stack.append(encode_num(size))
+    return True
+
 # 0x83: 'OP_INVERT',
 # 0x84: 'OP_AND',
 # 0x85: 'OP_OR',
@@ -428,7 +436,7 @@ OP_CODE_FUNCTIONS = {
     # 0x7f: 'OP_SUBSTR',
     # 0x80: 'OP_LEFT',
     # 0x81: 'OP_RIGHT',
-    # 0x82: 'OP_SIZE',
+    0x82: op_size,
     # 0x83: 'OP_INVERT',
     # 0x84: 'OP_AND',
     # 0x85: 'OP_OR',
