@@ -77,6 +77,15 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(op_2rot, [0,1,2,3,4])
         self.opcodeShouldSucceed(op_2rot, [0,1,2,3,4,5], [2,3,4,5,0,1])
 
+    def test_op_2swap(self):
+        op_2swap = 0x72
+        self.opcodeShouldFail(op_2swap, [])
+        self.opcodeShouldFail(op_2swap, [0])
+        self.opcodeShouldFail(op_2swap, [0,1])
+        self.opcodeShouldFail(op_2swap, [0,1,2])
+        self.opcodeShouldSucceed(op_2swap, [0,1,2,3], [2,3,0,1])
+        self.opcodeShouldSucceed(op_2swap, [0,1,2,3,4], [0,3,4,1,2])
+
     def test_op_ifdup(self):
         op_ifdup = 0x73
         self.opcodeShouldFail(op_ifdup, [])
@@ -118,6 +127,13 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(op_rot, [0])
         self.opcodeShouldFail(op_rot, [0,1])
         self.opcodeShouldSucceed(op_rot, [0,1,2], [1,2,0])
+
+    def test_op_swap(self):
+        op_swap = 0x7c
+        self.opcodeShouldFail(op_swap, [])
+        self.opcodeShouldFail(op_swap, [0])
+        self.opcodeShouldSucceed(op_swap, [0,1], [1,0])
+        self.opcodeShouldSucceed(op_swap, [0,1,2], [0,2,1])
 
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])

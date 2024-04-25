@@ -199,7 +199,13 @@ def op_2rot(stack):
     stack.append(stack.pop(-6))
     return True
 
-# 0x72: 'OP_2SWAP',
+# 0x72: 'OP_2SWAP'
+def op_2swap(stack):
+    if len(stack) < 4:
+        return False
+    stack.append(stack.pop(-4))
+    stack.append(stack.pop(-4))
+    return True
 
 # 0x73: 'OP_IFDUP'
 def op_ifdup(stack):
@@ -252,7 +258,13 @@ def op_rot(stack):
     stack.append(stack.pop(-3))
     return True
 
-# 0x7c: 'OP_SWAP',
+# 0x7c: 'OP_SWAP'
+def op_swap(stack):
+    if len(stack) < 2:
+        return False
+    stack.append(stack.pop(-2))
+    return True
+
 # 0x7d: 'OP_TUCK',
 # 0x7e: 'OP_CAT',
 # 0x7f: 'OP_SUBSTR',
@@ -377,7 +389,7 @@ OP_CODE_FUNCTIONS = {
     0x6f: op_3dup,
     0x70: op_2over,
     0x71: op_2rot,
-    # 0x72: 'OP_2SWAP',
+    0x72: op_2swap,
     0x73: op_ifdup,
     0x74: op_depth,
     0x75: op_drop,
@@ -387,7 +399,7 @@ OP_CODE_FUNCTIONS = {
     # 0x79: 'OP_PICK',
     # 0x7a: 'OP_ROLL',
     0x7b: op_rot,
-    # 0x7c: 'OP_SWAP',
+    0x7c: op_swap,
     # 0x7d: 'OP_TUCK',
     # 0x7e: 'OP_CAT',
     # 0x7f: 'OP_SUBSTR',
