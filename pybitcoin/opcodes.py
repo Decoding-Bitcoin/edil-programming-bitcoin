@@ -355,10 +355,48 @@ def op_1sub(stack):
 
 # 0x8d: 'OP_2MUL',
 # 0x8e: 'OP_2DIV',
-# 0x8f: 'OP_NEGATE',
-# 0x90: 'OP_ABS',
-# 0x91: 'OP_NOT',
-# 0x92: 'OP_0NOTEQUAL',
+
+# 0x8f: 'OP_NEGATE'
+def op_negate(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    stack.append(encode_num(-n))
+    return True
+
+# 0x90: 'OP_ABS'
+def op_abs(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    if n > 0:
+        stack.append(encode_num(n))
+    else:
+        stack.append(encode_num(-n))
+    return True
+
+# 0x91: 'OP_NOT'
+def op_not(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    if n == 0:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0x92: 'OP_0NOTEQUAL'
+def op_0notequal(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    if n == 0:
+        stack.append(encode_num(0))
+    else:
+        stack.append(encode_num(1))
+    return True
+
 # 0x93: 'OP_ADD',
 # 0x94: 'OP_SUB',
 # 0x95: 'OP_MUL',
@@ -490,10 +528,10 @@ OP_CODE_FUNCTIONS = {
     0x8c: op_1sub,
     # 0x8d: 'OP_2MUL',
     # 0x8e: 'OP_2DIV',
-    # 0x8f: 'OP_NEGATE',
-    # 0x90: 'OP_ABS',
-    # 0x91: 'OP_NOT',
-    # 0x92: 'OP_0NOTEQUAL',
+    0x8f: op_negate,
+    0x90: op_abs,
+    0x91: op_not,
+    0x92: op_0notequal,
     # 0x93: 'OP_ADD',
     # 0x94: 'OP_SUB',
     # 0x95: 'OP_MUL',

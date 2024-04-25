@@ -260,6 +260,39 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_1sub, [0, 1, b'\x01'], [0, 1, b''])
         self.opcodeShouldSucceed(op_1sub, [0, 1, b'\xfe\xff\xff\x7f'], [0, 1, b'\xfd\xff\xff\x7f'])
 
+    def test_op_negate(self):
+        op_negate = 0x8f
+        self.opcodeShouldFail(op_negate, [])
+        self.opcodeShouldSucceed(op_negate, [b''], [b''])
+        self.opcodeShouldSucceed(op_negate, [b'\x01'], [b'\x81'])
+        self.opcodeShouldSucceed(op_negate, [0,1,b'\x01'], [0,1,b'\x81'])
+        self.opcodeShouldSucceed(op_negate, [0,1,b'\xff'], [0,1,b'\x7f'])
+
+    def test_op_abs(self):
+        op_abs = 0x90
+        self.opcodeShouldFail(op_abs, [])
+        self.opcodeShouldSucceed(op_abs, [b''], [b''])
+        self.opcodeShouldSucceed(op_abs, [b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_abs, [0,1,b'\x81'], [0,1,b'\x01'])
+        self.opcodeShouldSucceed(op_abs, [0,1,b'\xff'], [0,1,b'\x7f'])
+        self.opcodeShouldSucceed(op_abs, [0,1,b'\x7f'], [0,1,b'\x7f'])
+
+    def test_op_not(self):
+        op_not = 0x91
+        self.opcodeShouldFail(op_not, [])
+        self.opcodeShouldSucceed(op_not, [b''], [b'\x01'])
+        self.opcodeShouldSucceed(op_not, [b'\x01'], [b''])
+        self.opcodeShouldSucceed(op_not, [0,1,b'\x01'], [0,1,b''])
+        self.opcodeShouldSucceed(op_not, [0,1,b'\xff'], [0,1,b''])
+
+    def test_op_0notequal(self):
+        op_0notequal = 0x92
+        self.opcodeShouldFail(op_0notequal, [])
+        self.opcodeShouldSucceed(op_0notequal, [b''], [b''])
+        self.opcodeShouldSucceed(op_0notequal, [b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_0notequal, [0,1,b'\x01'], [0,1,b'\x01'])
+        self.opcodeShouldSucceed(op_0notequal, [0,1,b'\xff'], [0,1,b'\x01'])
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,
