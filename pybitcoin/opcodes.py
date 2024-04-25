@@ -336,8 +336,23 @@ def op_equalverify(stack):
 
 # 0x89: 'OP_RESERVED1', # reserved
 # 0x8a: 'OP_RESERVED2', # reserved
-# 0x8b: 'OP_1ADD',
-# 0x8c: 'OP_1SUB',
+
+# 0x8b: 'OP_1ADD'
+def op_1add(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    stack.append(encode_num(n + 1))
+    return True
+
+# 0x8c: 'OP_1SUB'
+def op_1sub(stack):
+    if len(stack) < 1:
+        return False
+    n = decode_num(stack.pop())
+    stack.append(encode_num(n - 1))
+    return True
+
 # 0x8d: 'OP_2MUL',
 # 0x8e: 'OP_2DIV',
 # 0x8f: 'OP_NEGATE',
@@ -471,8 +486,8 @@ OP_CODE_FUNCTIONS = {
     0x88: op_equalverify,
     # 0x89: 'OP_RESERVED1', # reserved
     # 0x8a: 'OP_RESERVED2', # reserved
-    # 0x8b: 'OP_1ADD',
-    # 0x8c: 'OP_1SUB',
+    0x8b: op_1add,
+    0x8c: op_1sub,
     # 0x8d: 'OP_2MUL',
     # 0x8e: 'OP_2DIV',
     # 0x8f: 'OP_NEGATE',
