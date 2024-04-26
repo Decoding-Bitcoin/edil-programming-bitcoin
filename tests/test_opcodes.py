@@ -29,6 +29,63 @@ class OpcodesTest(TestCase):
     def test_op_nop(self):
         self.opcodeShouldSucceed(0x61, [], [])
 
+    def test_op_if(self):
+        op_if = 0x63
+
+        # stack is empty
+        stack = []
+        items = []
+        self.assertFalse(OP_CODE_FUNCTIONS[op_if](stack, items))
+
+        # stack is empty
+        stack = []
+        items = [0x0e]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_if](stack, items))
+
+        # no OP_ENDIF
+        stack = [b'']
+        items = [0x0e]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_if](stack, items))
+
+        # no OP_ENDIF
+        stack = [b'']
+        items = [0x0e, 0x67]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_if](stack, items))
+
+        # no OP_ENDIF
+        stack = [b'']
+        items = [0x0e, 0x67, 0x0f]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_if](stack, items))
+
+        # stack is empty
+        stack = []
+        items = [0x0e, 0x67, 0x0f, 0x68]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_if](stack, items))
+
+        # stack is empty, no OP_ELSE
+        stack = []
+        items = [0x0e, 0x0f, 0x68]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_if](stack, items))
+
+        # no OP_ELSE - should it fail, instead?
+        stack = [b'\x01']
+        items = [0x0e, 0x0f, 0x68]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_if](stack, items))
+        self.assertEqual(stack, [])
+        self.assertEqual(items, [0x0e, 0x0f])
+
+        stack = [b'']
+        items = [0x0e, 0x67, 0x0f, 0x68]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_if](stack, items))
+        self.assertEqual(stack, [])
+        self.assertEqual(items, [0x0f])
+
+        stack = [b'\x01']
+        items = [0x0e, 0x67, 0x0f, 0x68]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_if](stack, items))
+        self.assertEqual(stack, [])
+        self.assertEqual(items, [0x0e])
+
     def test_op_verify(self):
         self.opcodeShouldFail(0x69, [])
         self.opcodeShouldFail(0x69, [b''])
