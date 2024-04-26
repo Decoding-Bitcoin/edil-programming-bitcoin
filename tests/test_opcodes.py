@@ -391,6 +391,23 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_greaterthanorequal, [b'\x02', b'\x01'], [b'\x01'])
         self.opcodeShouldSucceed(op_greaterthanorequal, [0,1,b'\x02', b'\x01'], [0,1,b'\x01'])
 
+    def test_op_min(self):
+        op_min = 0xa3
+        self.opcodeShouldFail(op_min, [])
+        self.opcodeShouldFail(op_min, [0])
+        self.opcodeShouldSucceed(op_min, [b'', b''], [b''])
+        self.opcodeShouldSucceed(op_min, [b'', b'\x01'], [b''])
+        self.opcodeShouldSucceed(op_min, [b'\x02', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_min, [0,1,b'\x02', b'\x01'], [0,1,b'\x01'])
+
+    def test_op_max(self):
+        op_max = 0xa4
+        self.opcodeShouldFail(op_max, [])
+        self.opcodeShouldFail(op_max, [0])
+        self.opcodeShouldSucceed(op_max, [b'', b''], [b''])
+        self.opcodeShouldSucceed(op_max, [b'', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_max, [b'\x02', b'\x01'], [b'\x02'])
+        self.opcodeShouldSucceed(op_max, [0,1,b'\x02', b'\x01'], [0,1,b'\x02'])
 
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])

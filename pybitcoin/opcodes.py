@@ -521,8 +521,30 @@ def op_greaterthanorequal(stack):
         stack.append(encode_num(0))
     return True
 
-# 0xa3: 'OP_MIN',
-# 0xa4: 'OP_MAX',
+# 0xa3: 'OP_MIN'
+def op_min(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a < b:
+        stack.append(encode_num(a))
+    else:
+        stack.append(encode_num(b))
+    return True
+
+# 0xa4: 'OP_MAX'
+def op_max(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a < b:
+        stack.append(encode_num(b))
+    else:
+        stack.append(encode_num(a))
+    return True
+
 # 0xa5: 'OP_WITHIN',
 # 0xa6: 'OP_RIPEMD160',
 # 0xa7: 'OP_SHA1',
@@ -656,8 +678,8 @@ OP_CODE_FUNCTIONS = {
     0xa0: op_greaterthan,
     0xa1: op_lessthanorequal,
     0xa2: op_greaterthanorequal,
-    # 0xa3: 'OP_MIN',
-    # 0xa4: 'OP_MAX',
+    0xa3: op_min,
+    0xa4: op_max,
     # 0xa5: 'OP_WITHIN',
     # 0xa6: 'OP_RIPEMD160',
     # 0xa7: 'OP_SHA1',
