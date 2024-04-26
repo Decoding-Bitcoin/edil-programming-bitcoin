@@ -473,10 +473,54 @@ def op_numnotequal(stack):
         stack.append(encode_num(0))
     return True
 
-# 0x9f: 'OP_LESSTHAN',
-# 0xa0: 'OP_GREATERTHAN',
-# 0xa1: 'OP_LESSTHANOREQUAL',
-# 0xa2: 'OP_GREATERTHANOREQUAL',
+# 0x9f: 'OP_LESSTHAN'
+def op_lessthan(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a < b:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0xa0: 'OP_GREATERTHAN'
+def op_greaterthan(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a > b:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0xa1: 'OP_LESSTHANOREQUAL'
+def op_lessthanorequal(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a <= b:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0xa2: 'OP_GREATERTHANOREQUAL'
+def op_greaterthanorequal(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a >= b:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
 # 0xa3: 'OP_MIN',
 # 0xa4: 'OP_MAX',
 # 0xa5: 'OP_WITHIN',
@@ -608,10 +652,10 @@ OP_CODE_FUNCTIONS = {
     0x9c: op_numequal,
     0x9d: op_numequalverify,
     0x9e: op_numnotequal,
-    # 0x9f: 'OP_LESSTHAN',
-    # 0xa0: 'OP_GREATERTHAN',
-    # 0xa1: 'OP_LESSTHANOREQUAL',
-    # 0xa2: 'OP_GREATERTHANOREQUAL',
+    0x9f: op_lessthan,
+    0xa0: op_greaterthan,
+    0xa1: op_lessthanorequal,
+    0xa2: op_greaterthanorequal,
     # 0xa3: 'OP_MIN',
     # 0xa4: 'OP_MAX',
     # 0xa5: 'OP_WITHIN',

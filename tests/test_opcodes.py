@@ -356,6 +356,41 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_numequal, [b'', b'\x01'], [b'\x01'])
         self.opcodeShouldSucceed(op_numequal, [0,1,b'', b'\x01'], [0,1,b'\x01'])
 
+    def test_op_lessthan(self):
+        op_lessthan = 0x9f
+        self.opcodeShouldFail(op_lessthan, [])
+        self.opcodeShouldFail(op_lessthan, [0])
+        self.opcodeShouldSucceed(op_lessthan, [b'', b''], [b''])
+        self.opcodeShouldSucceed(op_lessthan, [b'', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_lessthan, [0,1,b'', b'\x01'], [0,1,b'\x01'])
+
+    def test_op_greaterthan(self):
+        op_greaterthan = 0xa0
+        self.opcodeShouldFail(op_greaterthan, [])
+        self.opcodeShouldFail(op_greaterthan, [0])
+        self.opcodeShouldSucceed(op_greaterthan, [b'', b''], [b''])
+        self.opcodeShouldSucceed(op_greaterthan, [b'', b'\x01'], [b''])
+        self.opcodeShouldSucceed(op_greaterthan, [b'\x02', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_greaterthan, [0,1,b'\x02', b'\x01'], [0,1,b'\x01'])
+
+    def test_op_lessthanorequal(self):
+        op_lessthanorequal = 0xa1
+        self.opcodeShouldFail(op_lessthanorequal, [])
+        self.opcodeShouldFail(op_lessthanorequal, [0])
+        self.opcodeShouldSucceed(op_lessthanorequal, [b'', b''], [b'\x01'])
+        self.opcodeShouldSucceed(op_lessthanorequal, [b'', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_lessthanorequal, [b'\x02', b'\x01'], [b''])
+        self.opcodeShouldSucceed(op_lessthanorequal, [0,1,b'', b'\x01'], [0,1,b'\x01'])
+
+    def test_op_greaterthanorequal(self):
+        op_greaterthanorequal = 0xa2
+        self.opcodeShouldFail(op_greaterthanorequal, [])
+        self.opcodeShouldFail(op_greaterthanorequal, [0])
+        self.opcodeShouldSucceed(op_greaterthanorequal, [b'', b''], [b'\x01'])
+        self.opcodeShouldSucceed(op_greaterthanorequal, [b'', b'\x01'], [b''])
+        self.opcodeShouldSucceed(op_greaterthanorequal, [b'\x02', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_greaterthanorequal, [0,1,b'\x02', b'\x01'], [0,1,b'\x01'])
+
 
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
