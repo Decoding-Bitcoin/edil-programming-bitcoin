@@ -409,6 +409,16 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_max, [b'\x02', b'\x01'], [b'\x02'])
         self.opcodeShouldSucceed(op_max, [0,1,b'\x02', b'\x01'], [0,1,b'\x02'])
 
+    def test_op_within(self):
+        op_within = 0xa5
+        self.opcodeShouldFail(op_within, [])
+        self.opcodeShouldFail(op_within, [0])
+        self.opcodeShouldFail(op_within, [0,1])
+        self.opcodeShouldSucceed(op_within, [b'', b'', b''], [b''])
+        self.opcodeShouldSucceed(op_within, [b'', b'\x01', b'\x03'], [b''])
+        self.opcodeShouldSucceed(op_within, [b'\x03', b'\x01', b'\x03'], [b''])
+        self.opcodeShouldSucceed(op_within, [0,1,b'\x02', b'\x01', b'\x03'], [0,1,b'\x01'])
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,

@@ -545,7 +545,19 @@ def op_max(stack):
         stack.append(encode_num(a))
     return True
 
-# 0xa5: 'OP_WITHIN',
+# 0xa5: 'OP_WITHIN'
+def op_within(stack):
+    if len(stack) < 3:
+        return False
+    max = decode_num(stack.pop())
+    min = decode_num(stack.pop())
+    n   = decode_num(stack.pop())
+    if min <= n and n < max:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
 # 0xa6: 'OP_RIPEMD160',
 # 0xa7: 'OP_SHA1',
 # 0xa8: 'OP_SHA256',
@@ -680,7 +692,7 @@ OP_CODE_FUNCTIONS = {
     0xa2: op_greaterthanorequal,
     0xa3: op_min,
     0xa4: op_max,
-    # 0xa5: 'OP_WITHIN',
+    0xa5: op_within,
     # 0xa6: 'OP_RIPEMD160',
     # 0xa7: 'OP_SHA1',
     # 0xa8: 'OP_SHA256',
