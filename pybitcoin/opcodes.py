@@ -44,6 +44,9 @@ def decode_num(element):
     else:
         return result
 
+def op_disabled(*args):
+    return False
+
 # 0x00: OP_0
 def op_0(stack):
     stack.append(encode_num(0))
@@ -145,6 +148,7 @@ def op_nop(stack):
     return True
 
 # 0x62: 'OP_VER', # reserved
+
 # 0x63: 'OP_IF'
 def op_if(stack, items):
     if len(stack) < 1:
@@ -749,34 +753,34 @@ OP_CODE_FUNCTIONS = {
     0x7b: op_rot,
     0x7c: op_swap,
     0x7d: op_tuck,
-    # 0x7e: 'OP_CAT',
-    # 0x7f: 'OP_SUBSTR',
-    # 0x80: 'OP_LEFT',
-    # 0x81: 'OP_RIGHT',
+    0x7e: op_disabled,
+    0x7f: op_disabled,
+    0x80: op_disabled,
+    0x81: op_disabled,
     0x82: op_size,
-    # 0x83: 'OP_INVERT',
-    # 0x84: 'OP_AND',
-    # 0x85: 'OP_OR',
-    # 0x86: 'OP_XOR',
+    0x83: op_disabled,
+    0x84: op_disabled,
+    0x85: op_disabled,
+    0x86: op_disabled,
     0x87: op_equal,
     0x88: op_equalverify,
     # 0x89: 'OP_RESERVED1', # reserved
     # 0x8a: 'OP_RESERVED2', # reserved
     0x8b: op_1add,
     0x8c: op_1sub,
-    # 0x8d: 'OP_2MUL',
-    # 0x8e: 'OP_2DIV',
+    0x8d: op_disabled,
+    0x8e: op_disabled,
     0x8f: op_negate,
     0x90: op_abs,
     0x91: op_not,
     0x92: op_0notequal,
     0x93: op_add,
     0x94: op_sub,
-    # 0x95: 'OP_MUL',
-    # 0x96: 'OP_DIV',
-    # 0x97: 'OP_MOD',
-    # 0x98: 'OP_LSHIFT',
-    # 0x99: 'OP_RSHIFT',
+    0x95: op_disabled,
+    0x96: op_disabled,
+    0x97: op_disabled,
+    0x98: op_disabled,
+    0x99: op_disabled,
     0x9a: op_booland,
     0x9b: op_boolor,
     0x9c: op_numequal,
