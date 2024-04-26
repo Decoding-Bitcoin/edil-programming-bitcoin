@@ -445,8 +445,22 @@ def op_boolor(stack):
         stack.append(encode_num(1))
     return True
 
-# 0x9c: 'OP_NUMEQUAL',
-# 0x9d: 'OP_NUMEQUALVERIFY',
+# 0x9c: 'OP_NUMEQUAL'
+def op_numequal(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a == b:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0x9d: 'OP_NUMEQUALVERIFY'
+def op_numequalverify(stack):
+    return op_numequal(stack) and op_verify(stack)
+
 # 0x9e: 'OP_NUMNOTEQUAL',
 # 0x9f: 'OP_LESSTHAN',
 # 0xa0: 'OP_GREATERTHAN',
@@ -580,8 +594,8 @@ OP_CODE_FUNCTIONS = {
     # 0x99: 'OP_RSHIFT',
     0x9a: op_booland,
     0x9b: op_boolor,
-    # 0x9c: 'OP_NUMEQUAL',
-    # 0x9d: 'OP_NUMEQUALVERIFY',
+    0x9c: op_numequal,
+    0x9d: op_numequalverify,
     # 0x9e: 'OP_NUMNOTEQUAL',
     # 0x9f: 'OP_LESSTHAN',
     # 0xa0: 'OP_GREATERTHAN',

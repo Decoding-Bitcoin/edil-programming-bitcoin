@@ -331,6 +331,23 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_boolor, [b'\x01', b'\x01'], [b'\x01'])
         self.opcodeShouldSucceed(op_boolor, [0,1,b'\x02', b'\x03'], [0,1,b'\x01'])
 
+    def test_op_numequal(self):
+        op_numequal = 0x9c
+        self.opcodeShouldFail(op_numequal, [])
+        self.opcodeShouldFail(op_numequal, [0])
+        self.opcodeShouldSucceed(op_numequal, [b'', b''], [b'\x01'])
+        self.opcodeShouldSucceed(op_numequal, [b'', b'\x01'], [b''])
+        self.opcodeShouldSucceed(op_numequal, [0,1,b'', b'\x01'], [0,1,b''])
+
+    def test_op_numequalverify(self):
+        op_numequal = 0x9d
+        self.opcodeShouldFail(op_numequal, [])
+        self.opcodeShouldFail(op_numequal, [0])
+        self.opcodeShouldSucceed(op_numequal, [b'', b''], [])
+        self.opcodeShouldFail(op_numequal, [b'', b'\x01'])
+        self.opcodeShouldFail(op_numequal, [0,1,b'', b'\x01'])
+        self.opcodeShouldSucceed(op_numequal, [0,1,b'\x01', b'\x01'], [0,1])
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,
