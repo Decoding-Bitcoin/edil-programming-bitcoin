@@ -348,6 +348,15 @@ class OpcodesTest(TestCase):
         self.opcodeShouldFail(op_numequal, [0,1,b'', b'\x01'])
         self.opcodeShouldSucceed(op_numequal, [0,1,b'\x01', b'\x01'], [0,1])
 
+    def test_op_numnotequal(self):
+        op_numequal = 0x9e
+        self.opcodeShouldFail(op_numequal, [])
+        self.opcodeShouldFail(op_numequal, [0])
+        self.opcodeShouldSucceed(op_numequal, [b'', b''], [b''])
+        self.opcodeShouldSucceed(op_numequal, [b'', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_numequal, [0,1,b'', b'\x01'], [0,1,b'\x01'])
+
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,

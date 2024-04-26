@@ -461,7 +461,18 @@ def op_numequal(stack):
 def op_numequalverify(stack):
     return op_numequal(stack) and op_verify(stack)
 
-# 0x9e: 'OP_NUMNOTEQUAL',
+# 0x9e: 'OP_NUMNOTEQUAL'
+def op_numnotequal(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a != b:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
 # 0x9f: 'OP_LESSTHAN',
 # 0xa0: 'OP_GREATERTHAN',
 # 0xa1: 'OP_LESSTHANOREQUAL',
@@ -596,7 +607,7 @@ OP_CODE_FUNCTIONS = {
     0x9b: op_boolor,
     0x9c: op_numequal,
     0x9d: op_numequalverify,
-    # 0x9e: 'OP_NUMNOTEQUAL',
+    0x9e: op_numnotequal,
     # 0x9f: 'OP_LESSTHAN',
     # 0xa0: 'OP_GREATERTHAN',
     # 0xa1: 'OP_LESSTHANOREQUAL',
