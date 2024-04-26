@@ -419,6 +419,24 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_within, [b'\x03', b'\x01', b'\x03'], [b''])
         self.opcodeShouldSucceed(op_within, [0,1,b'\x02', b'\x01', b'\x03'], [0,1,b'\x01'])
 
+    def test_op_ripemd(self):
+        op_ripemd160 = 0xa6
+        self.opcodeShouldFail(op_ripemd160, [])
+        self.opcodeShouldSucceed(op_ripemd160, [b''], [bytes.fromhex('9c1185a5c5e9fc54612808977ee8f548b2258d31')])
+        self.opcodeShouldSucceed(op_ripemd160, [0,1,b'\x01'], [0,1,bytes.fromhex('f291ba5015df348c80853fa5bb0f7946f5c9e1b3')])
+
+    def test_op_sha1(self):
+        op_sha1 = 0xa7
+        self.opcodeShouldFail(op_sha1, [])
+        self.opcodeShouldSucceed(op_sha1, [b''], [bytes.fromhex('da39a3ee5e6b4b0d3255bfef95601890afd80709')])
+        self.opcodeShouldSucceed(op_sha1, [0,1,b'\x01'], [0,1,bytes.fromhex('bf8b4530d8d246dd74ac53a13471bba17941dff7')])
+
+    def test_op_sha256(self):
+        op_sha256 = 0xa8
+        self.opcodeShouldFail(op_sha256, [])
+        self.opcodeShouldSucceed(op_sha256, [b''], [bytes.fromhex('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')])
+        self.opcodeShouldSucceed(op_sha256, [0,1,b'\x01'], [0,1,bytes.fromhex('4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a')])
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,

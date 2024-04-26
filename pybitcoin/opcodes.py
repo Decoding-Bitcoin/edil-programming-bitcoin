@@ -1,4 +1,10 @@
-from pybitcoin.hash import hash160, hash256
+from pybitcoin.hash import (
+    ripemd160,
+    sha1,
+    sha256,
+    hash160,
+    hash256
+)
 
 
 def encode_num(num):
@@ -558,9 +564,29 @@ def op_within(stack):
         stack.append(encode_num(0))
     return True
 
-# 0xa6: 'OP_RIPEMD160',
-# 0xa7: 'OP_SHA1',
-# 0xa8: 'OP_SHA256',
+# 0xa6: 'OP_RIPEMD160'
+def op_ripemd160(stack):
+    if len(stack) < 1:
+        return False
+    element = stack.pop()
+    stack.append(ripemd160(element))
+    return True
+
+# 0xa7: 'OP_SHA1'
+def op_sha1(stack):
+    if len(stack) < 1:
+        return False
+    element = stack.pop()
+    stack.append(sha1(element))
+    return True
+
+# 0xa8: 'OP_SHA256'
+def op_sha256(stack):
+    if len(stack) < 1:
+        return False
+    element = stack.pop()
+    stack.append(sha256(element))
+    return True
 
 # 0xa9: 'OP_HASH160',
 def op_hash160(stack):
@@ -693,9 +719,9 @@ OP_CODE_FUNCTIONS = {
     0xa3: op_min,
     0xa4: op_max,
     0xa5: op_within,
-    # 0xa6: 'OP_RIPEMD160',
-    # 0xa7: 'OP_SHA1',
-    # 0xa8: 'OP_SHA256',
+    0xa6: op_ripemd160,
+    0xa7: op_sha1,
+    0xa8: op_sha256,
     0xa9: op_hash160,
     0xaa: op_hash256,
     # 0xab: 'OP_CODESEPARATOR',
