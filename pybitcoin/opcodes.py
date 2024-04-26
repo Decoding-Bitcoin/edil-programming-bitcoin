@@ -420,8 +420,31 @@ def op_sub(stack):
 # 0x97: 'OP_MOD',
 # 0x98: 'OP_LSHIFT',
 # 0x99: 'OP_RSHIFT',
-# 0x9a: 'OP_BOOLAND',
-# 0x9b: 'OP_BOOLOR',
+
+# 0x9a: 'OP_BOOLAND'
+def op_booland(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a != 0 and b != 0:
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0x9b: 'OP_BOOLOR'
+def op_boolor(stack):
+    if len(stack) < 2:
+        return False
+    b = decode_num(stack.pop())
+    a = decode_num(stack.pop())
+    if a == 0 and b == 0:
+        stack.append(encode_num(0))
+    else:
+        stack.append(encode_num(1))
+    return True
+
 # 0x9c: 'OP_NUMEQUAL',
 # 0x9d: 'OP_NUMEQUALVERIFY',
 # 0x9e: 'OP_NUMNOTEQUAL',
@@ -555,8 +578,8 @@ OP_CODE_FUNCTIONS = {
     # 0x97: 'OP_MOD',
     # 0x98: 'OP_LSHIFT',
     # 0x99: 'OP_RSHIFT',
-    # 0x9a: 'OP_BOOLAND',
-    # 0x9b: 'OP_BOOLOR',
+    0x9a: op_booland,
+    0x9b: op_boolor,
     # 0x9c: 'OP_NUMEQUAL',
     # 0x9d: 'OP_NUMEQUALVERIFY',
     # 0x9e: 'OP_NUMNOTEQUAL',

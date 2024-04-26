@@ -311,6 +311,26 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(op_sub, [0,1,b'\x01', b'\x81'], [0,1,b'\x02'])
         self.opcodeShouldSucceed(op_sub, [0,1,b'\x01', b'\x01'], [0,1,b''])
 
+    def test_op_booland(self):
+        op_booland = 0x9a
+        self.opcodeShouldFail(op_booland, [])
+        self.opcodeShouldFail(op_booland, [0])
+        self.opcodeShouldSucceed(op_booland, [b'', b''], [b''])
+        self.opcodeShouldSucceed(op_booland, [b'', b'\x01'], [b''])
+        self.opcodeShouldSucceed(op_booland, [b'\x01', b''], [b''])
+        self.opcodeShouldSucceed(op_booland, [b'\x01', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_booland, [0,1,b'\x02', b'\x03'], [0,1,b'\x01'])
+
+    def test_op_boolor(self):
+        op_boolor = 0x9b
+        self.opcodeShouldFail(op_boolor, [])
+        self.opcodeShouldFail(op_boolor, [0])
+        self.opcodeShouldSucceed(op_boolor, [b'', b''], [b''])
+        self.opcodeShouldSucceed(op_boolor, [b'', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_boolor, [b'\x01', b''], [b'\x01'])
+        self.opcodeShouldSucceed(op_boolor, [b'\x01', b'\x01'], [b'\x01'])
+        self.opcodeShouldSucceed(op_boolor, [0,1,b'\x02', b'\x03'], [0,1,b'\x01'])
+
     def test_op_hash160(self):
         self.opcodeShouldFail(0xa9, [])
         self.opcodeShouldSucceed(opcode=0xa9,
