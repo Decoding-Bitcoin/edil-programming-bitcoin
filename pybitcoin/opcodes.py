@@ -181,7 +181,42 @@ def op_if(stack, items):
         items[:0] = true_items
     return True
 
-# 0x64: 'OP_NOTIF',
+# 0x64: 'OP_NOTIF'
+def op_notif(stack, items):
+    if len(stack) < 1:
+        return False
+    # go through and re-make the items array based on the top stack element
+    true_items = []
+    false_items = []
+    current_array = true_items
+    found = False
+    num_endifs_needed = 1
+    while len(items) > 0:
+        item = items.pop(0)
+        if item in (99, 100):
+            # nested if, we have to go another endif
+            num_endifs_needed += 1
+            current_array.append(item)
+        elif num_endifs_needed == 1 and item == 103:
+            current_array = false_items
+        elif item == 104:
+            if num_endifs_needed == 1:
+                found = True
+                break
+            else:
+                num_endifs_needed -= 1
+                current_array.append(item)
+        else:
+            current_array.append(item)
+    if not found:
+        return False
+    element = stack.pop()
+    if decode_num(element) == 0:
+        items[:0] = true_items
+    else:
+        items[:0] = false_items
+    return True
+
 # 0x65: 'OP_VERIF', # reserved
 # 0x66: 'OP_VERNOTIF', # reserved
 # 0x67: 'OP_ELSE',
@@ -688,7 +723,7 @@ OP_CODE_FUNCTIONS = {
     0x61: op_nop,
     # 0x62: 'OP_VER', # reserved
     0x63: op_if,
-    # 0x64: 'OP_NOTIF',
+    0x64: op_notif,
     # 0x65: 'OP_VERIF', # reserved
     # 0x66: 'OP_VERNOTIF', # reserved
     # 0x67: 'OP_ELSE',
