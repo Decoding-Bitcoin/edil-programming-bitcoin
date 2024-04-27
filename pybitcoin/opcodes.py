@@ -709,8 +709,42 @@ def op_opcheckmultisigverify(stack, z):
     return op_checkmultisig(stack, z) and op_verify(stack)
 
 # 0xb0: 'OP_NOP1', # reserved
+
 # 0xb1: 'OP_CHECKLOCKTIMEVERIFY', # previously OP_NOP2
+def op_checklocktimeverify(stack, locktime, sequence):
+    if sequence == 0xffffffff:
+        return False
+    if len(stack) < 1:
+        return False
+    element = decode_num(stack[-1])
+    if element < 0:
+        return False
+    if element < 500000000 and locktime > 500000000:
+        return False
+    if locktime < element:
+        return False
+    return True
+
 # 0xb2: 'OP_CHECKSEQUENCEVERIFY', # previously OP_NOP3
+def op_checksequenceverify(stack, version, sequence):
+    if sequence & (1 << 31) == (1 << 31):
+        return False
+    if len(stack) < 1:
+        return False
+    element = decode_num(stack[-1])
+    if element < 0:
+        return False
+    if element & (1 << 31) == (1 << 31):
+        if version < 2:
+            return False
+        elif sequence & (1 << 31) == (1 << 31):
+            return False
+        elif element & (1 << 22) != sequence & (1 << 22):
+            return False
+        elif element & 0xffff > sequence & 0xffff:
+            return False
+    return True
+
 # 0xb3: 'OP_NOP4', # reserved
 # 0xb4: 'OP_NOP5', # reserved
 # 0xb5: 'OP_NOP6', # reserved
@@ -829,8 +863,8 @@ OP_CODE_FUNCTIONS = {
     0xae: op_checkmultisig,
     0xaf: op_checkmultisigverify,
     # 0xb0: 'OP_NOP1', # reserved
-    # 0xb1: 'OP_CHECKLOCKTIMEVERIFY', # previously OP_NOP2
-    # 0xb2: 'OP_CHECKSEQUENCEVERIFY', # previously OP_NOP3
+    0xb1: op_checklocktimeverify,
+    0xb2: op_checksequenceverify,
     # 0xb3: 'OP_NOP4', # reserved
     # 0xb4: 'OP_NOP5', # reserved
     # 0xb5: 'OP_NOP6', # reserved
