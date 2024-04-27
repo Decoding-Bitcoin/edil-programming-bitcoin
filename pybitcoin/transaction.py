@@ -1,5 +1,11 @@
-from pybitcoin.util import read_varint, encode_varint, int_to_little_endian
+from pybitcoin.util import (
+    read_varint,
+    encode_varint,
+    int_to_little_endian,
+    little_endian_to_int
+)
 from pybitcoin.hash import hash256
+from pybitcoin.script import Script
 
 from io import BytesIO
 import json
@@ -32,21 +38,16 @@ class TxIn:
     @classmethod
     def parse(cls, stream):
         # previous transaction ID
-        previous_id_raw = stream.read(32)
-        previous_id = int.from_bytes(previous_id_raw, 'little').to_bytes(32, 'big')
+        previous_id = stream.read(32)[::-1] # little to big endian
 
         # previous index
-        previous_index_raw = stream.read(4)
-        previous_index = int.from_bytes(previous_index_raw, 'little')
+        previous_index = little_endian_to_int(stream.read(4))
 
         # scriptSig
-        script_length = read_varint(stream)
-        script_raw = encode_varint(script_length) + stream.read(script_length)
-        script_sig = Script.parse(script_raw)
+        script_sig = Script.parse(stream)
 
         # sequence
-        sequence_raw = stream.read(4)
-        sequence = int.from_bytes(sequence_raw, 'little')
+        sequence = little_endian_to_int(stream.read(4))
 
         # return parsed transaction
         return TxIn(previous_id, previous_index, script_sig, sequence)
@@ -89,9 +90,7 @@ class TxOut:
         amount = int.from_bytes(stream.read(8), 'little')
 
         # scriptPubkey
-        script_length = read_varint(stream)
-        script_pubkey_raw = encode_varint(script_length) + stream.read(script_length)
-        script_pubkey = Script.parse(script_pubkey_raw)
+        script_pubkey = Script.parse(stream)
 
         # return parsed transaction
         return TxOut(amount, script_pubkey)
@@ -160,8 +159,7 @@ class Tx:
     @classmethod
     def parse(cls, stream, testnet=False):
         # parse version
-        serialized_version = stream.read(4)
-        version = int.from_bytes(serialized_version, 'little')
+        version = little_endian_to_int(stream.read(4))
 
         # parse inputs
         tx_ins = []
@@ -176,7 +174,7 @@ class Tx:
             tx_outs.append(TxOut.parse(stream))
 
         # parse locktime
-        locktime = int.from_bytes(stream.read(4), 'little')
+        locktime = little_endian_to_int(stream.read(4))
 
         # build final transaction
         return Tx(version, tx_ins, tx_outs, locktime)
