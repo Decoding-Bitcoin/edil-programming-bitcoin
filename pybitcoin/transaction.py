@@ -2,7 +2,8 @@ from pybitcoin.util import (
     read_varint,
     encode_varint,
     int_to_little_endian,
-    little_endian_to_int
+    little_endian_to_int,
+    SIGHASH_ALL
 )
 from pybitcoin.hash import hash256
 from pybitcoin.script import Script
@@ -178,6 +179,53 @@ class Tx:
 
         # build final transaction
         return Tx(version, tx_ins, tx_outs, locktime)
+
+    def sig_hash(self, index):
+        '''Returns the integer representation of the hash that needs to get
+        signed for index input_index'''
+
+        # start the serialization with version
+        # use int_to_little_endian in 4 bytes
+        modified_tx_raw = int_to_little_endian(self.version, 4)
+
+        # add how many inputs there are using encode_varint
+        modified_tx_raw += encode_varint(len(self.tx_ins))
+
+        # loop through each input using enumerate, so we have the input index
+        for i, tx_in in enumerate(self.tx_ins):
+            # if the input index is the one we're signing
+            if i == index:
+            # the previous tx's ScriptPubkey is the ScriptSig
+                script_sig = tx_in.script_pubkey(self.testnet)
+            # Otherwise, the ScriptSig is empty
+            else:
+                script_sig = None
+            # add the serialization of the input with the ScriptSig we want
+            modified_tx_raw += TxIn(
+                prev_tx=tx_in.prev_tx,
+                prev_index=tx_in.prev_index,
+                script_sig=script_sig,
+                sequence=tx_in.sequence,
+            ).serialize()
+
+        # add how many outputs there are using encode_varint
+        modified_tx_raw += encode_varint(len(self.tx_outs))
+
+        # add the serialization of each output
+        for tx_out in self.tx_outs:
+            modified_tx_raw += tx_out.serialize()
+
+        # add the locktime using int_to_little_endian in 4 bytes
+        modified_tx_raw += int_to_little_endian(self.locktime, 4)
+
+        # add SIGHASH_ALL using int_to_little_endian in 4 bytes
+        modified_tx_raw += int_to_little_endian(SIGHASH_ALL, 4)
+
+        # hash256 the serialization
+        h256 = hash256(modified_tx_raw)
+
+        # convert the result to an integer using int.from_bytes(x, 'big')
+        return int.from_bytes(h256)
 
 
 class TxFetcher:

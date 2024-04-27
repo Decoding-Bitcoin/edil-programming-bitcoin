@@ -1,5 +1,9 @@
 import math
 
+SIGHASH_ALL = 0x01
+SIGHASH_NONE = 0x02
+SIGHASH_SINGLE = 0x03
+
 def little_endian_to_int(b):
     return int.from_bytes(b, 'little')
 
