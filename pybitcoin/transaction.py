@@ -25,11 +25,7 @@ class TxIn:
         '''Returns the byte serialization of the transaction input'''
         result = self.prev_tx[::-1] # to endian little
         result += int_to_little_endian(self.prev_index, 4)
-
-        # TODO: serialize Script
-        result += self.script_sig
-        # result += self.script_sig.serialize()
-
+        result += self.script_sig.serialize()
         result += int_to_little_endian(self.sequence, 4)
         return result
 
@@ -44,16 +40,16 @@ class TxIn:
         previous_index = int.from_bytes(previous_index_raw, 'little')
 
         # scriptSig
-        # TODO: parse scriptSig
         script_length = read_varint(stream)
         script_raw = encode_varint(script_length) + stream.read(script_length)
+        script_sig = Script.parse(script_raw)
 
         # sequence
         sequence_raw = stream.read(4)
         sequence = int.from_bytes(sequence_raw, 'little')
 
         # return parsed transaction
-        return TxIn(previous_id, previous_index, script_raw, sequence)
+        return TxIn(previous_id, previous_index, script_sig, sequence)
 
     def fetch_tx(self, testnet=False):
         return TxFetcher.fetch(self.prev_tx.hex(), testnet=testnet)
@@ -84,10 +80,7 @@ class TxOut:
     def serialize(self):
         '''Returns the byte serialization of the transaction output'''
         result = int_to_little_endian(self.amount, 8)
-
-        # TODO: serialize Script
-        result += self.script_pubkey
-        # result += self.script_pubkey.serialize()
+        result += self.script_pubkey.serialize()
         return result
 
     @classmethod
@@ -96,12 +89,12 @@ class TxOut:
         amount = int.from_bytes(stream.read(8), 'little')
 
         # scriptPubkey
-        # TODO: parse scriptPubkey
         script_length = read_varint(stream)
         script_pubkey_raw = encode_varint(script_length) + stream.read(script_length)
+        script_pubkey = Script.parse(script_pubkey_raw)
 
         # return parsed transaction
-        return TxOut(amount, script_pubkey_raw)
+        return TxOut(amount, script_pubkey)
 
 
 class Tx:
