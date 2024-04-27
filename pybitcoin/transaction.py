@@ -180,7 +180,7 @@ class Tx:
         # build final transaction
         return Tx(version, tx_ins, tx_outs, locktime)
 
-    def sig_hash(self, index):
+    def sig_hash(self, index, redeem_script=None):
         '''Returns the integer representation of the hash that needs to get
         signed for index input_index'''
 
@@ -196,7 +196,10 @@ class Tx:
             # if the input index is the one we're signing
             if i == index:
             # the previous tx's ScriptPubkey is the ScriptSig
-                script_sig = tx_in.script_pubkey(self.testnet)
+                if redeem_script == None:
+                    script_sig = tx_in.script_pubkey(self.testnet)
+                else:
+                    script_sig = redeem_script
             # Otherwise, the ScriptSig is empty
             else:
                 script_sig = None
