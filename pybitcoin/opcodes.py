@@ -705,7 +705,7 @@ def op_checkmultisig(stack, z):
     raise NotImplementedError
 
 # 0xaf: 'OP_CHECKMULTISIGVERIFY'
-def op_opcheckmultisigverify(stack, z):
+def op_checkmultisigverify(stack, z):
     return op_checkmultisig(stack, z) and op_verify(stack)
 
 # 0xb0: 'OP_NOP1', # reserved
