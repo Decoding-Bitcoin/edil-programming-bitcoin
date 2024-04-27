@@ -1,7 +1,6 @@
 from unittest import TestCase
 from pybitcoin.opcodes import *
 
-
 class OpcodesTest(TestCase):
 
     def opcodeShouldSucceed(self, opcode, stack, expected_stack):
@@ -568,6 +567,59 @@ class OpcodesTest(TestCase):
         self.opcodeShouldSucceed(0xaa,
                           stack = [2, 1, b'\x00'],
                           expected_stack = [2, 1, bytes.fromhex('1406e05881e299367766d313e26c05564ec91bf721d31726bd6e46e60689539a')])
+
+    def test_op_checksig(self):
+        op_checksig = 0xac
+
+        stack = []
+        z = 0
+        self.assertFalse(OP_CODE_FUNCTIONS[op_checksig](stack, z))
+
+        stack = [b'']
+        z = 0
+        self.assertFalse(OP_CODE_FUNCTIONS[op_checksig](stack, z))
+
+        # wrong message
+        z = 1234
+        signature = '3044022073d92f8e0860c8c82039e5ab83df4032e58c45af54cfcc8f8a80a939e4cd12af0220288622e5585d568b62ed21b9050d96415afec2a549e4335000c1a0c7dfbc2991'
+        pubkey = '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'
+        stack = [bytes.fromhex(signature), bytes.fromhex(pubkey)]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_checksig](stack, z))
+        self.assertEqual(stack, [b''])
+
+        # right message
+        z = 12345
+        signature = '3044022073d92f8e0860c8c82039e5ab83df4032e58c45af54cfcc8f8a80a939e4cd12af0220288622e5585d568b62ed21b9050d96415afec2a549e4335000c1a0c7dfbc2991'
+        pubkey = '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'
+        stack = [bytes.fromhex(signature), bytes.fromhex(pubkey)]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_checksig](stack, z))
+        self.assertEqual(stack, [b'\x01'])
+
+    def test_op_checksigverify(self):
+        op_checksigverify = 0xad
+
+        stack = []
+        z = 0
+        self.assertFalse(OP_CODE_FUNCTIONS[op_checksigverify](stack, z))
+
+        stack = [b'']
+        z = 0
+        self.assertFalse(OP_CODE_FUNCTIONS[op_checksigverify](stack, z))
+
+        # wrong message
+        z = 1234
+        signature = '3044022073d92f8e0860c8c82039e5ab83df4032e58c45af54cfcc8f8a80a939e4cd12af0220288622e5585d568b62ed21b9050d96415afec2a549e4335000c1a0c7dfbc2991'
+        pubkey = '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'
+        stack = [bytes.fromhex(signature), bytes.fromhex(pubkey)]
+        self.assertFalse(OP_CODE_FUNCTIONS[op_checksigverify](stack, z))
+
+        # right message
+        z = 12345
+        signature = '3044022073d92f8e0860c8c82039e5ab83df4032e58c45af54cfcc8f8a80a939e4cd12af0220288622e5585d568b62ed21b9050d96415afec2a549e4335000c1a0c7dfbc2991'
+        pubkey = '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'
+        stack = [bytes.fromhex(signature), bytes.fromhex(pubkey)]
+        self.assertTrue(OP_CODE_FUNCTIONS[op_checksigverify](stack, z))
+        self.assertEqual(stack, [])
 
 
 if __name__ == '__main__':

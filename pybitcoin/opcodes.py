@@ -5,6 +5,10 @@ from pybitcoin.hash import (
     hash160,
     hash256
 )
+from pybitcoin.ecc import (
+    Signature,
+    S256Point
+)
 
 
 def encode_num(num):
@@ -679,8 +683,23 @@ def op_hash256(stack):
     return True
 
 # 0xab: 'OP_CODESEPARATOR',
-# 0xac: 'OP_CHECKSIG',
-# 0xad: 'OP_CHECKSIGVERIFY',
+
+# 0xac: 'OP_CHECKSIG'
+def op_checksig(stack, z):
+    if len(stack) < 2:
+        return False
+    pubkey = S256Point.parse(stack.pop())
+    signature = Signature.parse(stack.pop())
+    if pubkey.verify(z, signature):
+        stack.append(encode_num(1))
+    else:
+        stack.append(encode_num(0))
+    return True
+
+# 0xad: 'OP_CHECKSIGVERIFY'
+def op_checksigverify(stack, z):
+    return op_checksig(stack, z) and op_verify(stack)
+
 # 0xae: 'OP_CHECKMULTISIG',
 # 0xaf: 'OP_CHECKMULTISIGVERIFY',
 # 0xb0: 'OP_NOP1', # reserved
@@ -799,8 +818,8 @@ OP_CODE_FUNCTIONS = {
     0xa9: op_hash160,
     0xaa: op_hash256,
     # 0xab: 'OP_CODESEPARATOR',
-    # 0xac: 'OP_CHECKSIG',
-    # 0xad: 'OP_CHECKSIGVERIFY',
+    0xac: op_checksig,
+    0xad: op_checksigverify,
     # 0xae: 'OP_CHECKMULTISIG',
     # 0xaf: 'OP_CHECKMULTISIGVERIFY',
     # 0xb0: 'OP_NOP1', # reserved
