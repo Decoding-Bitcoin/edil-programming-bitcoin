@@ -700,8 +700,14 @@ def op_checksig(stack, z):
 def op_checksigverify(stack, z):
     return op_checksig(stack, z) and op_verify(stack)
 
-# 0xae: 'OP_CHECKMULTISIG',
-# 0xaf: 'OP_CHECKMULTISIGVERIFY',
+# 0xae: 'OP_CHECKMULTISIG'
+def op_checkmultisig(stack, z):
+    raise NotImplementedError
+
+# 0xaf: 'OP_CHECKMULTISIGVERIFY'
+def op_opcheckmultisigverify(stack, z):
+    return op_checkmultisig(stack, z) and op_verify(stack)
+
 # 0xb0: 'OP_NOP1', # reserved
 # 0xb1: 'OP_CHECKLOCKTIMEVERIFY', # previously OP_NOP2
 # 0xb2: 'OP_CHECKSEQUENCEVERIFY', # previously OP_NOP3
@@ -820,8 +826,8 @@ OP_CODE_FUNCTIONS = {
     # 0xab: 'OP_CODESEPARATOR',
     0xac: op_checksig,
     0xad: op_checksigverify,
-    # 0xae: 'OP_CHECKMULTISIG',
-    # 0xaf: 'OP_CHECKMULTISIGVERIFY',
+    0xae: op_checkmultisig,
+    0xaf: op_checkmultisigverify,
     # 0xb0: 'OP_NOP1', # reserved
     # 0xb1: 'OP_CHECKLOCKTIMEVERIFY', # previously OP_NOP2
     # 0xb2: 'OP_CHECKSEQUENCEVERIFY', # previously OP_NOP3
